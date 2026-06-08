@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Philosophy Series - リアルタイム生成論 / 分離マトリックス概論 / 才能とシャドウ</title>
+<title>Philosophy Series - リアルタイム生成論 / 分離マトリックス概論 / 才能とシャドウ / 仮面と本来のバイブス / 響きあう世界</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Noto+Sans+JP:wght@100;300;400&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,30 +54,46 @@
     --accent-glow: rgba(168,85,247,0.4);
   }
 
+  /* 4. 仮面と本来のバイブステーマ（Emerald） */
+  body.theme-ks {
+    --pulse: #10b981;
+    --flare: #34d399;
+    --warm: #a7f3d0;
+    --text-secondary: #86efac;
+    --text-dim: #14532d;
+    --accent: var(--pulse);
+    --accent-glow: rgba(16,185,129,0.4);
+  }
+
+  /* 5. 響きあう世界テーマ（Rose & Gold） */
+  body.theme-hw {
+    --pulse: #f43f5e;
+    --flare: #fb7185;
+    --warm: #fde047;
+    --text-secondary: #fda4af;
+    --text-dim: #4c0519;
+    --accent: var(--pulse);
+    --accent-glow: rgba(244,63,94,0.4);
+  }
+
   /* ── コンテンツ表示の制御（bodyクラス依存で100%表示保証） ── */
   .tab-content { display: none; }
   .dots-container { display: none; }
 
   body.theme-rt #content-rt { display: block !important; }
   body.theme-rt #dots-rt { display: flex !important; }
-  body.theme-rt .site-nav-a[data-tab="rt"] {
-    color: var(--accent) !important;
-    border-bottom-color: var(--accent) !important;
-  }
 
   body.theme-sm #content-sm { display: block !important; }
   body.theme-sm #dots-sm { display: flex !important; }
-  body.theme-sm .site-nav-a[data-tab="sm"] {
-    color: var(--accent) !important;
-    border-bottom-color: var(--accent) !important;
-  }
 
   body.theme-ts #content-ts { display: block !important; }
   body.theme-ts #dots-ts { display: flex !important; }
-  body.theme-ts .site-nav-a[data-tab="ts"] {
-    color: var(--accent) !important;
-    border-bottom-color: var(--accent) !important;
-  }
+
+  body.theme-ks #content-ks { display: block !important; }
+  body.theme-ks #dots-ks { display: flex !important; }
+
+  body.theme-hw #content-hw { display: block !important; }
+  body.theme-hw #dots-hw { display: flex !important; }
 
   html { scroll-behavior: smooth; }
 
@@ -103,41 +119,95 @@
   #site-nav {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 20;
-    background: rgba(4,6,10,0.88);
-    backdrop-filter: blur(12px);
+    background: rgba(4, 6, 10, 0.92);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--edge);
   }
   .site-nav-inner {
-    max-width: 820px; margin: 0 auto; padding: 0 2rem;
-    height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  }
-  @media (max-width: 580px) {
-    .site-nav-inner { padding: 0 1rem; }
+    max-width: 820px; margin: 0 auto; padding: 0.5rem 1rem;
+    display: flex; justify-content: center; align-items: center;
+    height: 54px;
   }
   .site-nav-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem; color: var(--text-dim);
-    letter-spacing: 0.2em; flex-shrink: 0;
-    transition: color 0.5s;
+    display: none !important; /* ラーベルを完全に消去して横幅を広く確保 */
   }
-  .site-nav-links { display: flex; }
   
-  /* インラインで反応する安全なメニュー要素 */
+  /* ── STREAMING_CHUNK: Styling the responsive capsule menu buttons... ── */
+  .site-nav-links {
+    display: flex;
+    flex-wrap: nowrap; /* 1列（1行）を強制 */
+    gap: 0.35rem; /* 余白をコンパクトにして1列に収める */
+    width: 100%;
+    justify-content: center; /* 中央揃えで整列 */
+    overflow-x: auto; /* はみ出た場合は綺麗にスワイプ可能に */
+    -webkit-overflow-scrolling: touch;
+    padding: 0.2rem 0;
+  }
+  
+  /* スクロールバーは非表示にしてスマートさを担保 */
+  .site-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* インラインで反応する安全なメニュー要素（文字を太字の白にし、目立たせる） */
   .site-nav-a {
     font-family: 'Noto Sans JP', sans-serif;
-    font-weight: 300; font-size: 0.75rem;
-    color: var(--text-dim); text-decoration: none;
-    letter-spacing: 0.05em; padding: 0 1rem;
-    height: 50px; display: flex; align-items: center;
-    border-bottom: 2px solid transparent;
-    transition: color 0.3s, border-color 0.3s;
+    font-weight: 700; font-size: 0.75rem; /* 太字・フォントを少し小さくして1列に収める */
+    color: rgba(255, 255, 255, 0.9); /* 常に白に近い色 */
+    text-decoration: none;
+    white-space: nowrap; /* 改行を禁止して1列に */
+    letter-spacing: 0.02em; padding: 0.4rem 0.75rem; /* 詰め気味のパディング */
+    height: 32px; display: inline-flex; align-items: center;
+    background: rgba(255, 255, 255, 0.08); /* 常に少し明るい枠と背景を敷く */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9999px; /* 丸みのあるカプセル形状 */
+    transition: all 0.3s ease;
     cursor: pointer;
     user-select: none;
+    flex-shrink: 0;
   }
-  @media (max-width: 580px) {
-    .site-nav-a { padding: 0 0.5rem; font-size: 0.7rem; }
+  .site-nav-a:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.40);
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
   }
-  .site-nav-a:hover { color: var(--text-secondary); }
+
+  /* ── 各テーマ別：アクティブなタブを鮮やかに発光色付け ── */
+  body.theme-rt .site-nav-a[data-tab="rt"] {
+    color: #ffffff !important;
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 4px 14px var(--accent-glow);
+  }
+
+  body.theme-sm .site-nav-a[data-tab="sm"] {
+    color: #ffffff !important;
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 4px 14px var(--accent-glow);
+  }
+
+  body.theme-ts .site-nav-a[data-tab="ts"] {
+    color: #ffffff !important;
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 4px 14px var(--accent-glow);
+  }
+
+  body.theme-ks .site-nav-a[data-tab="ks"] {
+    color: #ffffff !important;
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 4px 14px var(--accent-glow);
+  }
+
+  body.theme-hw .site-nav-a[data-tab="hw"] {
+    color: #ffffff !important;
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 4px 14px var(--accent-glow);
+  }
 
   /* ── shadow-talent: simulator ── */
   .simulator-container {
@@ -195,7 +265,12 @@
   .hero-section {
     min-height: 100vh;
     display: flex; flex-direction: column; justify-content: center;
-    padding: 9rem 0 4rem;
+    padding: 8rem 0 4rem; /* 1列に戻ったのですっきりと心地よい上部余白へ */
+  }
+  @media (min-width: 1024px) {
+    .hero-section {
+      padding: 9rem 0 4rem;
+    }
   }
 
   .kana-label {
@@ -571,6 +646,8 @@
       <div class="site-nav-a" data-tab="rt" onclick="safeSwitchTab('rt')">01 リアルタイム生成論</div>
       <div class="site-nav-a" data-tab="sm" onclick="safeSwitchTab('sm')">02 分離マトリックス概論</div>
       <div class="site-nav-a" data-tab="ts" onclick="safeSwitchTab('ts')">03 才能とシャドウ</div>
+      <div class="site-nav-a" data-tab="ks" onclick="safeSwitchTab('ks')">04 仮面とバイブス</div>
+      <div class="site-nav-a" data-tab="hw" onclick="safeSwitchTab('hw')">05 響きあう世界</div>
     </div>
   </div>
 </header>
@@ -601,6 +678,24 @@
   <div class="dot" onclick="safeScrollTo('ts-s2')"></div>
   <div class="dot" onclick="safeScrollTo('ts-s3')"></div>
   <div class="dot" onclick="safeScrollTo('ts-coda')"></div>
+</nav>
+
+<!-- ── DOTS NAVIGATION (MASKS & VIBES) ── -->
+<nav id="dots-ks" class="dots-container">
+  <div class="dot active" onclick="safeScrollTo('ks-hero')"></div>
+  <div class="dot" onclick="safeScrollTo('ks-s1')"></div>
+  <div class="dot" onclick="safeScrollTo('ks-s2')"></div>
+  <div class="dot" onclick="safeScrollTo('ks-s3')"></div>
+  <div class="dot" onclick="safeScrollTo('ks-coda')"></div>
+</nav>
+
+<!-- ── DOTS NAVIGATION (RESONATING WORLD) ── -->
+<nav id="dots-hw" class="dots-container">
+  <div class="dot active" onclick="safeScrollTo('hw-hero')"></div>
+  <div class="dot" onclick="safeScrollTo('hw-s1')"></div>
+  <div class="dot" onclick="safeScrollTo('hw-s2')"></div>
+  <div class="dot" onclick="safeScrollTo('hw-s3')"></div>
+  <div class="dot" onclick="safeScrollTo('hw-coda')"></div>
 </nav>
 
 
@@ -860,7 +955,7 @@
       </div>
 
       <p>
-        私たちが「自分」と「世界」を別々のものとして経験するとき、
+        私たちが「自分」と「世界」を別々のものとして経験するとき, 
         そこには<strong>分離マトリックス</strong>と呼ぶべき認知・感情・言語の構造が働いている。
         これは現実の客観的な性質ではなく、意識がある特定の様式で自らを経験するときに生成される<strong>フィルター構造</strong>である。
       </p>
@@ -972,7 +1067,7 @@
       <p>
         維持エネルギーを止めることは、何もしないことではない.
         それは<strong>今という場に、完全に到着すること</strong>だ。
-        批判も、改善も、崇拝も——すべては「今ではない何か」に向かうベクトルを持っている。
+        批判も、改善も, 崇拝も——すべては「今ではない何か」に向かうベクトルを持っている。
         そのベクトルが静止するとき、残るのは、ただ在ることだけだ。
       </p>
 
@@ -1062,7 +1157,7 @@
 
       <p>
         唯一の鍵は、何かを操作しようと躍起になるのをやめ、<strong>ただそこにそのエネルギーが「在ること」を完全に認めること</strong>。
-        介入の手を止めてありのままを認めた瞬間、それまで狭い枠に閉じ込められ、不調和に摩擦を起こしていたバイブス（震え）が自然に開き出し、独自の輝きを放つ才能（ギフト）として今この瞬間に現れ始める。
+        介入の手を止めてありのままを認めた瞬間、それまで狭い枠に閉じ込められ、不調和に摩擦を起こしていたバイブス（震え）が自然に開き出し、独自の輝きを放つ才能（ギフト）として今この瞬間に现れ始める。
       </p>
     </div>
   </section>
@@ -1162,10 +1257,263 @@
         すべての影は<em>本来の光</em>として歌い出す。
       </div>
       <div>
-        <div onclick="safeSwitchTab('rt')" class="page-link reveal">← 01 リアルタイム生成論へ戻る</div>
+        <div onclick="safeSwitchTab('ks')" class="page-link reveal">04 仮面と本来のバイブスへ進む →</div>
       </div>
       <div class="mono-line reveal">
         equivalence &nbsp;|&nbsp; shadow and talent &nbsp;|&nbsp; 才能とシャドウ
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ==========================================
+     TAB 04: 仮面とサバイバル (MASKS & SURVIVAL)
+     ========================================== -->
+<div id="content-ks" class="tab-content">
+
+  <!-- ── HERO ── -->
+  <section id="ks-hero" class="hero-section">
+    <div class="wrap">
+      <div class="kana-label">Masks and Original Vibration</div>
+      <h1>仮面と<br><em>サバイバル</em></h1>
+      <p class="hero-sub">
+        仮面社会という鏡を割って、本来の周波数で存在すること。<br>
+        サバイバルゲームの終わりと、世界線のリアルタイム適合。
+      </p>
+      <div class="hero-mono">
+        <span class="sep-indicator"></span>breaking persona / aligning with true vibration
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S1: 命題 ── -->
+  <section id="ks-s1">
+    <div class="wrap">
+      <div class="sec-num">01 / 命題</div>
+      <h2>仮面が作り出す<span class="accent">サバイバルゲーム</span></h2>
+
+      <div class="pull">
+        <p>「あなたが仮面をつけている限り、現れる社会もまた仮面社会となり、勝ち続けなければならない生存競争となる。」</p>
+      </div>
+
+      <p>
+        私たちは、他者の目、社会的な適合、自己の安全を確保するために、自らの「外側」に幾重もの仮面（役割・防衛反応・ペルソナ）を身につける。
+        しかしここに、存在論的な逆説がある。
+        あなたが仮面を被って世界と接するとき、あなたを取り巻く現実、<strong>「他者もまた仮面を被って敵対する仮面社会」</strong>として生成される。
+      </p>
+
+      <p>
+        その仮面社会に現れるゲームの規則は、極めて単純かつ冷酷である。
+        <strong>「競争しなければ生き残れない」「奪わなければ奪われる」「得をしなければ損をする」「勝たなければ敗者になる」</strong>。
+        この張り詰めたサバイバルゲームの中で、あなたは一瞬の息抜きも許されず、勝利という砂の城を維持するためにエネルギーを注ぎ続けなければならない。
+      </p>
+
+      <p>
+        多くの人が感じる「社会との不調和」や「深い生きづらさ」とは、このサバイバルゲームのルールが、本来のあなた自身のバイブスと致命的にズレていることから発生している。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S2: ギャップ ── -->
+  <section id="ks-s2">
+    <div class="wrap">
+      <div class="sec-num">02 / 構造</div>
+      <h2>苦しさの実体：<span class="accent-red">仮面とバイブスの乖離</span></h2>
+
+      <p>
+        日々実感されるあの重苦しいギャップは、あなたの能力不足でも、世界の悪意でもない。
+        <strong>「自分本来のバイブス」と「サバイバルのために維持している仮面」の乖離（ギャップ）</strong>そのものが、苦しさとしてリアルタイムで結晶化しているのだ。
+      </p>
+
+      <div class="energy-grid reveal">
+        <div class="energy-card" style="border-top: 2px solid var(--red-bright);">
+          <div class="energy-tag" style="color: var(--red-bright);">THE GAP</div>
+          <div class="energy-title">本来のバイブス（真実）</div>
+          <div class="energy-desc">調和、安心、他者とそのまま繋がること、ただ今この瞬間にリラックスして在ることを求める純粋なエネルギー。</div>
+        </div>
+        <div class="energy-card" style="border-top: 2px solid var(--red-bright);">
+          <div class="energy-tag" style="color: var(--red-bright);">THE MASK</div>
+          <div class="energy-title">サバイバルゲームの仮面</div>
+          <div class="energy-desc">「何者かにならなければ」「価値を証明しなければ」「隙を見せてはならない」と、常に警戒し、得を求め、勝とうとする緊張状態。</div>
+        </div>
+      </div>
+
+      <p>
+        仮面を被って「サバイバルの勝利者」になろうとする行為そのものが、分離マトリックス（02）に莫大な燃料を注ぎ込むことになり、
+        結果として「自分と全く噛み合わない社会」を目の前に強固に固定し続ける。
+        勝ち続けなければいけないゲームにしがみつくこと自体が、ギャップという苦痛の永久機関を稼働させている。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S3: 解放と適合 ── -->
+  <section id="ks-s3">
+    <div class="wrap">
+      <div class="sec-num">03 / 解放</div>
+      <h2>本来のバイブスで<span class="accent">調和の世界を生きる</span></h2>
+
+      <p>
+        では、どうすればこのサバイバルゲームを終わらせることができるのか。
+        それは仮面をつけたまま「もっと強く、もっと賢く戦う」ことではない。
+        <strong>仮面を外し、勝とうとする作為、得をしようとする意図を、ただその場に「下ろす」ことだ。</strong>
+      </p>
+
+      <div class="dissolve-block reveal" style="border-radius: 4px;">
+        <div class="dissolve-title" style="color: var(--accent);">VIBRATIONAL REALIGNMENT</div>
+        <p class="dissolve-text">
+          戦うのをやめる。奪い合うのをやめる。仮面を守るための作為を完全に手放す。<br>
+          ただ、今ここに、むき出しの「本来の自分」のバイブスで呼吸する。<br><br>
+          あなたが自らの不調和を認め、仮面を外したとき、
+          リアルタイムで生成される世界は、あなたのその「本来のバイブス」に共鳴する調和の世界線へと、
+          ひとりでにシフトし始める。
+        </p>
+      </div>
+
+      <p>
+        これは、あなたが世界を変えるのではない。
+        <strong>あなたの周波数（バイブス）が本来のものに一致した結果、リアルタイム生成される現実が、その周波数に合うように完全に再構築される</strong>ということだ。
+        仮面社会という悪夢は、あなたが仮面を脱ぎ、サバイバルゲームから自発的にリタイアした瞬間に、その役割を終えて消えていき 自分に合った世界が現れだしていく。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── CODA ── -->
+  <section id="ks-coda" class="coda-section">
+    <div class="wrap">
+      <div class="big reveal">
+        仮面を外したとき、<br>
+        世界は戦場から<em>あなたの歌</em>へと変わる。
+      </div>
+      <div>
+        <div onclick="safeSwitchTab('hw')" class="page-link reveal">05 響きあう世界へ進む →</div>
+      </div>
+      <div class="mono-line reveal">
+        mask and survival &nbsp;|&nbsp; natural vibes &nbsp;|&nbsp; 仮面とバイブス
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ==========================================
+     TAB 05: 響きあう世界 (RESONATING WORLD)
+     ========================================== -->
+<div id="content-hw" class="tab-content">
+
+  <!-- ── HERO ── -->
+  <section id="hw-hero" class="hero-section">
+    <div class="wrap">
+      <div class="kana-label">The Resonating World</div>
+      <h1>響きあう<br><em>世界</em></h1>
+      <p class="hero-sub">
+        「〜しようとする行為」の終わり。承認の牢獄を超えて、ただ存在する。<br>
+        内なるバイブスで表現されたものが、完全に調和する社会を立ち上げる。
+      </p>
+      <div class="hero-mono">
+        <span class="sep-indicator"></span>no more seeking / already allowed / already loved
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S1: 命題 ── -->
+  <section id="hw-s1">
+    <div class="wrap">
+      <div class="sec-num">01 / 命題</div>
+      <h2>行為の終わり、<span class="accent">存在の全肯定</span></h2>
+
+      <div class="pull">
+        <p>「許されること、愛されること、認められること——これらは『獲得しようとする作為』ではなく、最初からそこに在る前提（デフォルト）である。」</p>
+      </div>
+
+      <p>
+        私たちは生まれてからずっと、「許されるために」「愛されるために」「認められるために」、何かをしなければならないと刷り込まれてきた。
+        社会のサバイバルゲーム（04）は、この<strong>「獲得しなければならないという欠乏感」</strong>を土台にして構築されている。
+      </p>
+
+      <p>
+        しかし本論は宣言する。
+        あなたが許されよう、認められようと躍起になっているその行為そのものが、「まだ自分は許されていない、認められていない」という強力な逆の周波数をリアルタイムに生成（01）し、そのような冷酷な世界を固定化してしまっている。
+      </p>
+
+      <p>
+        <strong>存在そのものが、すでに許されており、愛されており、認められている。</strong>
+        この途方もない真実を認めるとき、あなたは何かを獲得しようとする作為の手を完全に下ろし、ただリラックスして「ただ在る」だけでよくなります。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S2: 承認の超克 ── -->
+  <section id="hw-s2">
+    <div class="wrap">
+      <div class="sec-num">02 / 構造</div>
+      <h2>承認と許しの<span class="accent">牢獄からの脱出</span></h2>
+
+      <p>
+        「許されること」も「承認されること」も、本当は外側の世界に求める必要はありません。
+        それらの要求を外側に向けた瞬間に、分離マトリックス（02）が発動し、あなたと世界の間に「不完全な自分」と「ジャッジする世界」という分離の境界が立ち塞がります。
+      </p>
+
+      <div class="energy-grid reveal">
+        <div class="energy-card" style="border-top: 2px solid var(--pulse);">
+          <div class="energy-tag" style="color: var(--pulse);">THE PRISON OF SEEKING</div>
+          <div class="energy-title">作為：「〜しようとする行為」の罠</div>
+          <div class="energy-desc">愛されようとする、許されようとする、価値を証明しようとするすべての行為。これらは現在を「不十分なもの」と定義する分離のエネルギーです。</div>
+        </div>
+        <div class="energy-card" style="border-top: 2px solid var(--pulse);">
+          <div class="energy-tag" style="color: var(--pulse);">THE NATURAL STATE</div>
+          <div class="energy-title">本質：ただ在るということ</div>
+          <div class="energy-desc">すべての防衛と探求の手を下ろし、すでに自分は存在することを世界に100%許されていると知ること。この非作為のスペースで本来の周波数が目覚めます。</div>
+        </div>
+      </div>
+
+      <p>
+        「ただ在るだけでいい」とリラックスするとき、あなたの中心から、かつてないほど純粋で、のびのびとした<strong>「内なるバイブス（震え）」</strong>がひとりでに流れ出します。
+        それは周囲に合わせようと歪められた震えではなく、あなた本来の生命の鼓動そのものです。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S3: 世界線の再編 ── -->
+  <section id="hw-s3">
+    <div class="wrap">
+      <div class="sec-num">03 / 適合</div>
+      <h2>内なるバイブスに適合する<span class="accent">世界の結晶化</span></h2>
+
+      <p>
+        承認されることを求めず、許されようともせず、ただ自分本来の震えで表現していくとき、奇妙な存在論的ダイナミクスが始まります。
+        リアルタイム生成（01）の場は、あなたの「ただ在る」という本来のピュアな周波数に呼応して、<strong>その周波数に完全に噛み合う社会を目の前にリアルタイムで結晶化させ始めます。</strong>
+      </p>
+
+      <div class="dissolve-block reveal" style="border-radius: 4px;">
+        <div class="dissolve-title" style="color: var(--accent);">THE RESONANT PHENOMENON</div>
+        <p class="dissolve-text">
+          もう自分を歪めて戦う（サバイバルする）必要はありません。<br>
+          あなたが自分の震えをそのまま表現するとき、<br>
+          世界はあなたの存在を祝福する「共鳴する世界」へと姿を変えます。<br><br>
+          <strong>ただ、本来のあなたのバイブスで存在し、表現すること。</strong><br>
+          それだけで、あなたに完璧に適合した世界が現れていきます。
+        </p>
+      </div>
+
+      <p>
+        すべての探求（Seeking）が静止し、あなたが今この瞬間に完全に到着（Arrival）したとき、
+        世界は「克服すべき敵」でも「埋めるべき欠乏」でもなくなります。
+        それは、あなた自身の純粋なバイブスと美しく響きあう、ひとつの巨大な歌そのものとなるのです。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── CODA ── -->
+  <section id="hw-coda" class="coda-section">
+    <div class="wrap">
+      <div class="big reveal">
+        ただ在るだけで、<br>
+        世界はあなたと<em>響きあい</em>はじめる。
+      </div>
+      <div>
+        <div onclick="safeSwitchTab('rt')" class="page-link reveal">← 01 リアルタイム生成論へ戻る</div>
+      </div>
+      <div class="mono-line reveal">
+        resonating &nbsp;|&nbsp; already allowed &nbsp;|&nbsp; 響きあう世界
       </div>
     </div>
   </section>
@@ -1238,14 +1586,28 @@ function getParticleColor(p, fade) {
       return `rgba(74,158,202,${a * 0.15})`; // ブルー
     }
     return `rgba(74,104,128,${a * 0.5})`; // ディム
-  } else {
-    // ts (Talent & Shadow) タブ
+  } else if (currentTab === 'ts') {
     if (p.type === 'accent' || p.type === 'blue') {
       return `rgba(168,85,247,${a * 0.7})`; // パープル
     } else if (p.type === 'amber') {
       return `rgba(200,147,74,${a * 0.3})`; // ゴールド
     }
     return `rgba(78,64,102,${a * 0.5})`; // ディム
+  } else if (currentTab === 'ks') {
+    if (p.type === 'accent' || p.type === 'blue') {
+      return `rgba(16,185,129,${a * 0.7})`; // エメラルド
+    } else if (p.type === 'amber') {
+      return `rgba(200,147,74,${a * 0.2})`; // ゴールド
+    }
+    return `rgba(20,83,45,${a * 0.5})`; // ディム
+  } else {
+    // hw (Resonating World) タブ: 瑞々しいローズ＆高次元のゴールド
+    if (p.type === 'accent' || p.type === 'blue') {
+      return `rgba(244,63,94,${a * 0.75})`; // ローズ
+    } else if (p.type === 'amber') {
+      return `rgba(253,224,71,${a * 0.55})`; // ゴールド
+    }
+    return `rgba(76,5,25,${a * 0.5})`; // ディム・ローズ
   }
 }
 
@@ -1549,10 +1911,20 @@ const spyCallback = entries => {
         if (idx !== -1 && dotsSm.length > 0) {
           dotsSm.forEach((d, i) => d.classList.toggle('active', i === idx));
         }
-      } else {
+      } else if (currentTab === 'ts') {
         const idx = sectionsTs.indexOf(id);
         if (idx !== -1 && dotsTs.length > 0) {
           dotsTs.forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+      } else if (currentTab === 'ks') {
+        const idx = sectionsKs.indexOf(id);
+        if (idx !== -1 && dotsKs.length > 0) {
+          dotsKs.forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+      } else {
+        const idx = sectionsHw.indexOf(id);
+        if (idx !== -1 && dotsHw.length > 0) {
+          dotsHw.forEach((d, i) => d.classList.toggle('active', i === idx));
         }
       }
     }
@@ -1563,7 +1935,7 @@ function initScrollSpy() {
   try {
     if (scrollSpyObserver) scrollSpyObserver.disconnect();
     scrollSpyObserver = new IntersectionObserver(spyCallback, { threshold: 0.4 });
-    sectionsRt.concat(sectionsSm).concat(sectionsTs).forEach(id => {
+    sectionsRt.concat(sectionsSm).concat(sectionsTs).concat(sectionsKs).concat(sectionsHw).forEach(id => {
       const el = document.getElementById(id);
       if (el) scrollSpyObserver.observe(el);
     });
@@ -1615,7 +1987,7 @@ window.safeSwitchTab = function(targetTab) {
       } else if (targetTab === 'sm') {
         resizeMatrix();
         if (!matrixAnimFrameId) drawMatrix(0);
-      } else {
+      } else if (targetTab === 'ts') {
         resizeShadow();
         if (!shadowAnimFrameId) drawShadow(0);
       }
@@ -1644,6 +2016,11 @@ window.safeScrollTo = function(elementId) {
 
 
 /* ── 統合された安全な初期化処理 ── */
+const sectionsKs = ['ks-hero', 'ks-s1', 'ks-s2', 'ks-s3', 'ks-coda'];
+const sectionsHw = ['hw-hero', 'hw-s1', 'hw-s2', 'hw-s3', 'hw-coda'];
+let dotsKs = [];
+let dotsHw = [];
+
 function initApp() {
   if (cosmos && ctx) return; // 二重実行を防止
 
@@ -1683,6 +2060,8 @@ function initApp() {
     dotsRt = document.querySelectorAll('#dots-rt .dot');
     dotsSm = document.querySelectorAll('#dots-sm .dot');
     dotsTs = document.querySelectorAll('#dots-ts .dot');
+    dotsKs = document.querySelectorAll('#dots-ks .dot');
+    dotsHw = document.querySelectorAll('#dots-hw .dot');
   } catch (e) {}
 
   // キャンバス測定・寸法調整
