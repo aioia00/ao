@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Philosophy Series - リアルタイム生成論 / 分離マトリックス概論 / 才能とシャドウ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Noto+Sans+JP:wght@100;300;400&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── 共通変数 & デフォルトテーマ ── */
+  :root {
+    --void: #04060a;
+    --deep: #070d14;
+    --layer: #0b1520;
+    --surface: #111d2b;
+    --edge: #1a2e40;
+    --text-primary: #d4e4f0;
+    --red-bright: #e07070;
+  }
+
+  /* ── bodyのクラス駆動による100%堅牢なCSSテーマ切り替え ── */
+
+  /* 1. リアルタイム生成論テーマ（Blue） */
+  body.theme-rt {
+    --pulse: #4a9eca;
+    --flare: #7ec8e3;
+    --warm: #c8a97e;
+    --text-secondary: #7a9ab5;
+    --text-dim: #3a5568;
+    --accent: var(--pulse);
+    --accent-glow: rgba(74,158,202,0.4);
+  }
+
+  /* 2. 分離マトリックス概論テーマ（Amber） */
+  body.theme-sm {
+    --pulse: #4a9eca;
+    --warm: #c8a97e;
+    --amber: #c8934a;
+    --text-secondary: #9ab8ce;
+    --text-dim: #4a6880;
+    --accent: var(--amber);
+    --accent-glow: rgba(200,147,74,0.4);
+  }
+
+  /* 3. 才能とシャドウテーマ（Purple） */
+  body.theme-ts {
+    --pulse: #a855f7;
+    --flare: #c084fc;
+    --warm: #e9d5ff;
+    --text-secondary: #9a8cb0;
+    --text-dim: #4e4066;
+    --accent: var(--pulse);
+    --accent-glow: rgba(168,85,247,0.4);
+  }
+
+  /* ── コンテンツ表示の制御（bodyクラス依存で100%表示保証） ── */
+  .tab-content { display: none; }
+  .dots-container { display: none; }
+
+  body.theme-rt #content-rt { display: block !important; }
+  body.theme-rt #dots-rt { display: flex !important; }
+  body.theme-rt .site-nav-a[data-tab="rt"] {
+    color: var(--accent) !important;
+    border-bottom-color: var(--accent) !important;
+  }
+
+  body.theme-sm #content-sm { display: block !important; }
+  body.theme-sm #dots-sm { display: flex !important; }
+  body.theme-sm .site-nav-a[data-tab="sm"] {
+    color: var(--accent) !important;
+    border-bottom-color: var(--accent) !important;
+  }
+
+  body.theme-ts #content-ts { display: block !important; }
+  body.theme-ts #dots-ts { display: flex !important; }
+  body.theme-ts .site-nav-a[data-tab="ts"] {
+    color: var(--accent) !important;
+    border-bottom-color: var(--accent) !important;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--text-primary);
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 300;
+    line-height: 1.9;
+    overflow-x: hidden;
+    font-size: 17px;
+    transition: background 0.8s ease, color 0.8s ease;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 1;
+  }
+
+  /* ── site nav ── */
+  #site-nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 20;
+    background: rgba(4,6,10,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--edge);
+  }
+  .site-nav-inner {
+    max-width: 820px; margin: 0 auto; padding: 0 2rem;
+    height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  @media (max-width: 580px) {
+    .site-nav-inner { padding: 0 1rem; }
+  }
+  .site-nav-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 0.2em; flex-shrink: 0;
+    transition: color 0.5s;
+  }
+  .site-nav-links { display: flex; }
+  
+  /* インラインで反応する安全なメニュー要素 */
+  .site-nav-a {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300; font-size: 0.75rem;
+    color: var(--text-dim); text-decoration: none;
+    letter-spacing: 0.05em; padding: 0 1rem;
+    height: 50px; display: flex; align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s, border-color 0.3s;
+    cursor: pointer;
+    user-select: none;
+  }
+  @media (max-width: 580px) {
+    .site-nav-a { padding: 0 0.5rem; font-size: 0.7rem; }
+  }
+  .site-nav-a:hover { color: var(--text-secondary); }
+
+  /* ── shadow-talent: simulator ── */
+  .simulator-container {
+    margin: 3rem 0; padding: 2.5rem;
+    border: 1px solid var(--edge); background: var(--layer);
+    border-radius: 4px;
+  }
+  #shadow-canvas-wrap {
+    position: relative; height: 240px; width: 100%;
+    margin-bottom: 2rem; border-bottom: 1px dashed var(--edge);
+  }
+  #shadowCanvas { width: 100%; height: 100%; }
+  .slider-control {
+    display: flex; flex-direction: column; gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+  .slider-label-row {
+    display: flex; justify-content: space-between;
+    font-family: 'Space Mono', 'Noto Sans JP', sans-serif;
+    font-size: 0.8rem; color: var(--text-secondary);
+  }
+  @media (max-width: 580px) {
+    .slider-label-row { flex-direction: column; gap: 0.3rem; align-items: center; text-align: center; }
+  }
+  .slider-input-wrap {
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .tension-slider {
+    flex: 1; -webkit-appearance: none; appearance: none;
+    height: 4px; border-radius: 2px; background: var(--edge);
+    outline: none; cursor: pointer;
+  }
+  .tension-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 10px var(--accent-glow);
+    transition: background 0.3s, transform 0.2s;
+  }
+  .tension-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+  .slider-val {
+    font-family: 'Space Mono', monospace; font-size: 0.9rem;
+    color: var(--accent); width: 40px; text-align: right;
+  }
+
+  #cosmos { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  .wrap {
+    position: relative; z-index: 2;
+    max-width: 820px; margin: 0 auto; padding: 0 2rem;
+  }
+
+  /* ── hero ── */
+  .hero-section {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 9rem 0 4rem;
+  }
+
+  .kana-label {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 100; font-size: 0.72rem;
+    letter-spacing: 0.4em; color: var(--accent);
+    margin-bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 1.2s 0.2s ease forwards;
+    text-transform: uppercase;
+    transition: color 0.5s;
+  }
+
+  h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 7vw, 4.8rem);
+    line-height: 1.2; color: var(--text-primary);
+    opacity: 0; animation: fadeUp 1.2s 0.5s ease forwards;
+  }
+
+  h1 em {
+    font-style: normal; color: var(--accent); position: relative;
+    transition: color 0.5s;
+  }
+  h1 em::after {
+    content: ''; position: absolute;
+    bottom: 2px; left: 0; right: 0;
+    height: 1px; background: var(--accent); opacity: 0.4;
+    transition: background 0.5s;
+  }
+
+  .hero-sub {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300; font-size: 1rem;
+    color: var(--text-secondary);
+    margin-top: 2rem; max-width: 560px;
+    opacity: 0; animation: fadeUp 1.2s 0.9s ease forwards;
+    line-height: 2;
+    transition: color 0.5s;
+  }
+
+  .hero-mono {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem; color: var(--text-dim);
+    margin-top: 3.5rem; letter-spacing: 0.05em;
+    opacity: 0; animation: fadeUp 1.2s 1.3s ease forwards;
+    transition: color 0.5s;
+  }
+
+  .now-indicator, .sep-indicator {
+    display: inline-block;
+    margin-right: 10px; vertical-align: middle;
+    transition: background-color 0.5s;
+  }
+  .now-indicator {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--pulse);
+    animation: blink 1.4s ease-in-out infinite;
+  }
+  .sep-indicator {
+    width: 10px; height: 2px;
+    background: var(--accent);
+  }
+
+  /* ── sections ── */
+  section { padding: 7rem 0; border-top: 1px solid var(--edge); }
+
+  .sec-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; color: var(--text-dim);
+    letter-spacing: 0.2em; margin-bottom: 1.2rem;
+    transition: color 0.5s;
+  }
+
+  h2 {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 400;
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    color: var(--text-primary);
+    margin-bottom: 2.5rem; line-height: 1.5;
+  }
+
+  h2 .accent { color: var(--warm); }
+  h2 .accent-red { color: var(--red-bright); }
+
+  p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5em; line-height: 2.1;
+    transition: color 0.5s;
+  }
+
+  p strong { color: var(--text-primary); font-weight: 400; }
+
+  .pull {
+    border-left: 1px solid var(--accent);
+    margin: 3rem 0; padding: 0.5rem 0 0.5rem 2rem;
+    transition: border-color 0.5s;
+  }
+  .pull p {
+    font-size: 1.05rem; color: var(--text-primary);
+    font-weight: 300; margin: 0; line-height: 1.9;
+  }
+
+  /* ── real-time: wave diagram ── */
+  #wave-wrap {
+    margin: 3rem 0; position: relative; height: 120px; overflow: hidden;
+  }
+  #waveCanvas { width: 100%; height: 100%; }
+  .wave-label {
+    position: absolute; bottom: 0; right: 0;
+    font-family: 'Space Mono', monospace; font-size: 0.6rem;
+    color: var(--text-dim); letter-spacing: 0.1em;
+    transition: color 0.5s;
+  }
+
+  /* ── real-time: time diagram ── */
+  .time-diagram {
+    margin: 3rem 0; display: flex; flex-direction: column; gap: 0;
+  }
+  .time-row {
+    display: flex; align-items: center; gap: 1rem; padding: 1rem 0;
+    border-bottom: 1px solid var(--edge);
+    opacity: 0; transform: translateX(-16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .time-row.visible { opacity: 1; transform: none; }
+  .time-label {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--text-dim); width: 80px; flex-shrink: 0; letter-spacing: 0.05em;
+    transition: color 0.5s;
+  }
+  .time-bar-wrap {
+    flex: 1; height: 2px; background: var(--edge); border-radius: 1px; overflow: hidden;
+  }
+  .time-bar {
+    height: 100%; border-radius: 1px; transition: width 1.5s ease; width: 0;
+  }
+  .time-bar.past { background: var(--text-dim); transition: background-color 0.5s; }
+  .time-bar.now { background: var(--pulse); box-shadow: 0 0 8px var(--pulse); }
+  .time-bar.future { background: var(--edge); border: 1px dashed var(--text-dim); }
+  .time-desc {
+    font-size: 0.75rem; color: var(--text-dim); width: 140px;
+    flex-shrink: 0; text-align: right;
+    transition: color 0.5s;
+  }
+  @media (max-width: 580px) {
+    .time-desc { display: none; }
+  }
+
+  /* ── matrix: canvas ── */
+  #matrix-canvas-wrap {
+    margin: 3rem 0; position: relative; height: 300px;
+  }
+  #matrixCanvas { width: 100%; height: 100%; }
+
+  /* ── real-time & matrix: grid layouts ── */
+  .term-grid, .energy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin: 2.5rem 0;
+  }
+  @media (max-width: 600px) {
+    .term-grid, .energy-grid { grid-template-columns: 1fr; }
+  }
+
+  .term-card, .energy-card {
+    background: var(--layer);
+    padding: 1.5rem;
+    border: 1px solid var(--edge);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .term-card:hover {
+    border-color: var(--pulse);
+    background: var(--surface);
+  }
+  .energy-card {
+    border-top: 2px solid var(--red-bright);
+    padding: 1.6rem 1.8rem;
+  }
+  .energy-card:hover {
+    background: var(--surface);
+    border-color: rgba(224,112,112,0.5);
+  }
+
+  .term-jp, .energy-title {
+    font-size: 1rem; color: var(--text-primary);
+    font-weight: 400; margin-bottom: 0.4rem;
+  }
+  .term-en, .energy-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; color: var(--accent);
+    letter-spacing: 0.1em; margin-bottom: 0.8rem;
+    transition: color 0.5s;
+  }
+  .energy-tag { color: var(--red-bright); }
+
+  .term-def, .energy-desc {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.78rem; color: var(--text-secondary);
+    line-height: 1.8; font-weight: 300;
+    transition: color 0.5s;
+  }
+  .energy-desc { font-size: 0.85rem; line-height: 1.9; }
+
+  /* ── real-time: implications ── */
+  .impl-list {
+    margin: 2rem 0; display: flex; flex-direction: column; gap: 1.5rem;
+  }
+  .impl-item { display: flex; gap: 1.5rem; align-items: flex-start; }
+  .impl-icon {
+    width: 32px; height: 32px; flex-shrink: 0;
+    border: 1px solid var(--edge); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace; font-size: 0.6rem;
+    color: var(--pulse); margin-top: 2px;
+  }
+  .impl-body { flex: 1; }
+  .impl-title { font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.3rem; font-weight: 400; }
+  .impl-desc {
+    font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;
+    font-family: 'Noto Sans JP', sans-serif; font-weight: 300;
+    transition: color 0.5s;
+  }
+
+  /* ── matrix: dissolution ── */
+  .dissolve-block {
+    margin: 3rem 0; padding: 2rem 2.5rem;
+    border: 1px solid var(--edge); background: var(--layer);
+    position: relative; overflow: hidden;
+  }
+  .dissolve-block::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    transition: background 0.5s;
+  }
+  .dissolve-title {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.15em; color: var(--accent); margin-bottom: 1.2rem;
+    transition: color 0.5s;
+  }
+  .dissolve-text {
+    font-size: 1rem; color: var(--text-secondary); line-height: 2.1;
+    transition: color 0.5s;
+  }
+  .dissolve-text strong { color: var(--text-primary); font-weight: 400; }
+
+  /* ── matrix: relation box ── */
+  .relation-box {
+    margin: 3rem 0; padding: 2rem;
+    border: 1px solid var(--edge); background: var(--layer);
+    display: grid; grid-template-columns: 1fr 60px 1fr;
+    align-items: center; gap: 1rem;
+  }
+  @media (max-width: 580px) {
+    .relation-box { grid-template-columns: 1fr; text-align: center; }
+  }
+  .rel-side { text-align: center; }
+  .rel-title { font-size: 1rem; color: var(--text-primary); font-weight: 400; margin-bottom: 0.5rem; }
+  .rel-desc {
+    font-family: 'Noto Sans JP', sans-serif; font-size: 0.82rem;
+    color: var(--text-secondary); font-weight: 300; line-height: 1.8;
+    transition: color 0.5s;
+  }
+  .rel-arrow {
+    text-align: center; font-family: 'Space Mono', monospace;
+    font-size: 0.6rem; color: var(--text-dim); line-height: 2;
+    transition: color 0.5s;
+  }
+
+  /* ── matrix: path list ── */
+  .path-list {
+    margin: 2.5rem 0; display: flex; flex-direction: column; position: relative;
+  }
+  .path-list::before {
+    content: ''; position: absolute; left: 23px; top: 32px; bottom: 32px;
+    width: 1px; background: var(--edge);
+  }
+  .path-item { display: flex; gap: 1.5rem; align-items: flex-start; padding: 1.2rem 0; }
+  .path-dot {
+    width: 46px; height: 46px; flex-shrink: 0; border-radius: 50%;
+    border: 1px solid var(--edge); display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--accent); background: var(--layer); position: relative; z-index: 1;
+    transition: border-color 0.5s, color 0.5s, background-color 0.5s;
+  }
+  .path-dot.lit { border-color: var(--accent); background: var(--accent-glow); }
+  .path-body { flex: 1; padding-top: 8px; }
+  .path-title { font-size: 1rem; color: var(--text-primary); font-weight: 400; margin-bottom: 0.4rem; }
+  .path-desc {
+    font-family: 'Noto Sans JP', sans-serif; font-size: 0.85rem;
+    color: var(--text-secondary); font-weight: 300; line-height: 1.9;
+    transition: color 0.5s;
+  }
+
+  /* ── nav dots ── */
+  .dots-container {
+    position: fixed; right: 2rem; top: 50%;
+    transform: translateY(-50%);
+    display: none; flex-direction: column; gap: 12px; z-index: 10;
+  }
+  .dots-container.active { display: flex; }
+  @media (max-width: 900px) { .dots-container { display: none; } }
+
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--text-dim);
+    transition: background 0.3s, transform 0.3s; cursor: pointer;
+  }
+  .dot.active { background: var(--accent); transform: scale(1.6); }
+
+  /* ── coda ── */
+  .coda-section {
+    padding: 10rem 0 6rem; text-align: center; border-top: 1px solid var(--edge);
+  }
+  .coda-section .big {
+    font-size: clamp(1.5rem, 4.5vw, 2.8rem);
+    font-weight: 300; color: var(--text-primary);
+    line-height: 1.8; margin-bottom: 2rem;
+  }
+  .coda-section .big em { font-style: normal; color: var(--accent); transition: color 0.5s; }
+  .coda-section .mono-line {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem; color: var(--text-dim);
+    letter-spacing: 0.15em; margin-top: 3rem;
+    transition: color 0.5s;
+  }
+  
+  /* 遷移リンク用デザイン */
+  .page-link {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    margin-top: 3rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300; font-size: 0.85rem;
+    color: var(--accent); text-decoration: none;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--accent-glow);
+    padding-bottom: 2px;
+    transition: color 0.3s, border-color 0.3s;
+    cursor: pointer;
+    user-select: none;
+  }
+  .page-link:hover { opacity: 0.8; }
+
+  /* ── animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.2; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body class="theme-rt">
+
+<canvas id="cosmos"></canvas>
+
+<!-- ── SITE NAVIGATION（どんなセキュリティ制約でも100%バグらないインラインclick） ── -->
+<header id="site-nav">
+  <div class="site-nav-inner">
+    <span class="site-nav-label">Philosophy Series</span>
+    <div class="site-nav-links">
+      <div class="site-nav-a" data-tab="rt" onclick="safeSwitchTab('rt')">01 リアルタイム生成論</div>
+      <div class="site-nav-a" data-tab="sm" onclick="safeSwitchTab('sm')">02 分離マトリックス概論</div>
+      <div class="site-nav-a" data-tab="ts" onclick="safeSwitchTab('ts')">03 才能とシャドウ</div>
+    </div>
+  </div>
+</header>
+
+<!-- ── DOTS NAVIGATION (REAL-TIME GENERATION) ── -->
+<nav id="dots-rt" class="dots-container">
+  <div class="dot active" onclick="safeScrollTo('rt-hero')"></div>
+  <div class="dot" onclick="safeScrollTo('rt-s1')"></div>
+  <div class="dot" onclick="safeScrollTo('rt-s2')"></div>
+  <div class="dot" onclick="safeScrollTo('rt-s3')"></div>
+  <div class="dot" onclick="safeScrollTo('rt-s4')"></div>
+  <div class="dot" onclick="safeScrollTo('rt-coda')"></div>
+</nav>
+
+<!-- ── DOTS NAVIGATION (SEPARATION MATRIX) ── -->
+<nav id="dots-sm" class="dots-container">
+  <div class="dot active" onclick="safeScrollTo('sm-hero')"></div>
+  <div class="dot" onclick="safeScrollTo('sm-s1')"></div>
+  <div class="dot" onclick="safeScrollTo('sm-s2')"></div>
+  <div class="dot" onclick="safeScrollTo('sm-s3')"></div>
+  <div class="dot" onclick="safeScrollTo('sm-coda')"></div>
+</nav>
+
+<!-- ── DOTS NAVIGATION (TALENT & SHADOW) ── -->
+<nav id="dots-ts" class="dots-container">
+  <div class="dot active" onclick="safeScrollTo('ts-hero')"></div>
+  <div class="dot" onclick="safeScrollTo('ts-s1')"></div>
+  <div class="dot" onclick="safeScrollTo('ts-s2')"></div>
+  <div class="dot" onclick="safeScrollTo('ts-s3')"></div>
+  <div class="dot" onclick="safeScrollTo('ts-coda')"></div>
+</nav>
+
+
+<!-- ==========================================
+     TAB 01: リアルタイム生成論 (REAL-TIME GENERATION)
+     ========================================== -->
+<div id="content-rt" class="tab-content">
+
+  <!-- ── HERO ── -->
+  <section id="rt-hero" class="hero-section">
+    <div class="wrap">
+      <div class="kana-label">Theory of Real-Time Generation</div>
+      <h1>リアルタイム<br><em>生成論</em></h1>
+      <p class="hero-sub">
+        現実は過去の記憶でも、未来の予測でもない。<br>
+        それはいま、この瞬間に、絶え間なく生成されている。
+      </p>
+      <div class="hero-mono">
+        <span class="now-indicator"></span>generating at t = now
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S1: 命題 ── -->
+  <section id="rt-s1">
+    <div class="wrap">
+      <div class="sec-num">01 / 命題</div>
+      <h2>現実は<span class="accent">瞬間生成</span>されている</h2>
+
+      <div class="pull">
+        <p>「時間は流れていない。現在という点が、絶えず新たに出現し続けている。」</p>
+      </div>
+
+      <p>
+        私たちは習慣的に、現在を「過去」と「未来」の間に挟まれた薄い断面として理解する。
+        しかし<strong>リアルタイム生成論</strong>はこの前提を問い直す。
+        過去は記憶として「今」に存在し、未来は予期として「今」に存在する。
+        どちらも現在という生成の場を離れて、独立に実在しているわけではない。
+      </p>
+
+      <p>
+        この問いは古くからある——だが、それを単なる哲学的命題としてではなく、
+        <strong>知覚と存在の様式</strong>として生きることが本論の焦点である。
+      </p>
+
+      <div id="wave-wrap">
+        <canvas id="waveCanvas"></canvas>
+        <div class="wave-label">continuous generation / t → ∞</div>
+      </div>
+
+      <p>
+        量子力学的な視点では、観測されるまで粒子の状態は確定しない。
+        認識論的には、「見られていない木が倒れても音はするか」という問いがある。
+        リアルタイム生成論は、この二つの問いを繋ぐ直線上に立つ。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S2: 公理 ── -->
+  <section id="rt-s2">
+    <div class="wrap">
+      <div class="sec-num">02 / 公理</div>
+      <h2>生成論の<span class="accent">四つの基底</span></h2>
+
+      <ul class="axiom-list" style="list-style: none; margin: 2.5rem 0; display: grid; gap: 0;">
+        <li style="display: grid; grid-template-columns: 56px 1fr; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--edge); align-items: start; border-top: 1px solid var(--edge);">
+          <span class="axiom-num" style="font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--pulse); padding-top: 0.25rem; letter-spacing: 0.1em;">A.01</span>
+          <span class="axiom-text" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.9;"><strong>現在性の優位</strong>——
+          存在するすべては「今」においてのみ生起する。過去・現在・未来は記述の様式であり、
+          存在の様式ではない。</span>
+        </li>
+        <li style="display: grid; grid-template-columns: 56px 1fr; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--edge); align-items: start;">
+          <span class="axiom-num" style="font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--pulse); padding-top: 0.25rem; letter-spacing: 0.1em;">A.02</span>
+          <span class="axiom-text" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.9;"><strong>生成の連続性</strong>——
+          現実は「ある」のではなく「なり続けている」。静止した実体としての世界は概念上の抽象に過ぎない。</span>
+        </li>
+        <li style="display: grid; grid-template-columns: 56px 1fr; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--edge); align-items: start;">
+          <span class="axiom-num" style="font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--pulse); padding-top: 0.25rem; letter-spacing: 0.1em;">A.03</span>
+          <span class="axiom-text" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.9;"><strong>観察との相互生成</strong>——
+          観察者と観察対象は分離した二者ではなく、生成という出来事の中で同時に現れる。</span>
+        </li>
+        <li style="display: grid; grid-template-columns: 56px 1fr; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--edge); align-items: start;">
+          <span class="axiom-num" style="font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--pulse); padding-top: 0.25rem; letter-spacing: 0.1em;">A.04</span>
+          <span class="axiom-text" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.9;"><strong>記憶の現在性</strong>——
+          「過去があった」という確信もまた、今この瞬間に生成される経験である。
+          記憶は過去への窓ではなく、現在において生成される物語である。</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── S3: 時間論 ── -->
+  <section id="rt-s3">
+    <div class="wrap">
+      <div class="sec-num">03 / 時間論</div>
+      <h2>過去・現在・未来の<span class="accent">再定義</span></h2>
+
+      <p>
+        線形の時間観では、過去は「確定した事実の集積」として扱われる。
+        だがリアルタイム生成論においては、過去とは<strong>「今、想起されるもの」</strong>に過ぎない。
+        未来もまた<strong>「今、予期されるもの」</strong>である。
+      </p>
+
+      <div class="time-diagram" id="timeDiagram">
+        <div class="time-row" data-delay="0">
+          <span class="time-label">PAST</span>
+          <div class="time-bar-wrap"><div class="time-bar past" data-w="60"></div></div>
+          <span class="time-desc">想起として、今にある</span>
+        </div>
+        <div class="time-row" data-delay="200">
+          <span class="time-label">NOW</span>
+          <div class="time-bar-wrap"><div class="time-bar now" data-w="100"></div></div>
+          <span class="time-desc">生成の唯一の場</span>
+        </div>
+        <div class="time-row" data-delay="400">
+          <span class="time-label">FUTURE</span>
+          <div class="time-bar-wrap"><div class="time-bar future" data-w="30"></div></div>
+          <span class="time-desc">予期として、今にある</span>
+        </div>
+      </div>
+
+      <p>
+        この観点から見ると、「未来が怖い」という感情は、未来への恐怖ではなく、
+        <strong>「未来が怖い」という現在の思考</strong>への同一化である。
+        恐怖を感じているのは今であり、恐怖の対象も今において生成されている。
+      </p>
+
+      <p>
+        同様に、「あのとき失敗した」という後悔は、過去の失敗ではなく、
+        「後悔している」という現在の生成プロセスである。
+        これは逃避ではない——過去の出来事の責任を否定するものでもない。
+        ただ、<strong>苦しみの実体が「今」にあること</strong>を正確に見る試みである。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S4: 用語と含意 ── -->
+  <section id="rt-s4">
+    <div class="wrap">
+      <div class="sec-num">04 / 用語と含意</div>
+      <h2>概念の<span class="accent">位相図</span></h2>
+
+      <div class="term-grid reveal">
+        <div class="term-card">
+          <div class="term-jp">生成場</div>
+          <div class="term-en">GENERATIVE FIELD</div>
+          <div class="term-def">現実が出現する「今」の空間性。時間的な点ではなく、深度を持つ場として理解される。</div>
+        </div>
+        <div class="term-card">
+          <div class="term-jp">瞬間粒子</div>
+          <div class="term-en">MOMENT PARTICLE</div>
+          <div class="term-def">連続する「今」を構成する最小単位。離散的でありながら、連続性の印象を生む。</div>
+        </div>
+        <div class="term-card">
+          <div class="term-jp">記憶痕跡</div>
+          <div class="term-en">MEMORY TRACE</div>
+          <div class="term-def">過去の出来事の「残像」として現在に存在する情報構造。現在の生成によって再編成される。</div>
+        </div>
+        <div class="term-card">
+          <div class="term-jp">予期射影</div>
+          <div class="term-en">ANTICIPATORY PROJECTION</div>
+          <div class="term-def">未来を「今」に投影する認知プロセス。未来そのものではなく、現在に発生する思考である。</div>
+        </div>
+        <div class="term-card">
+          <div class="term-jp">観察折り返し</div>
+          <div class="term-en">OBSERVATION FOLD</div>
+          <div class="term-def">観察者が観察対象を見ることで、観察者自身もその場において生成されるという反転構造。</div>
+        </div>
+        <div class="term-card">
+          <div class="term-jp">生成の震え</div>
+          <div class="term-en">GENERATIVE TREMOR</div>
+          <div class="term-def">現実が確定する直前の、可能性の揺らぎ。量子的重ね合わせの認識論的対応物。</div>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 4rem;">実践的<span class="accent">含意</span></h2>
+
+      <div class="impl-list reveal">
+        <div class="impl-item">
+          <div class="impl-icon">→</div>
+          <div class="impl-body">
+            <div class="impl-title">注意の向け直し</div>
+            <div class="impl-desc">「今、何が生成されているか」を問うことで、自動的な思考パターンから距離をとる実践が可能になる。</div>
+          </div>
+        </div>
+        <div class="impl-item">
+          <div class="impl-icon">→</div>
+          <div class="impl-body">
+            <div class="impl-title">感情の脱同一化</div>
+            <div class="impl-desc">感情は「今この瞬間に生成されている現象」として見られるとき、自己の実体的な属性ではなくなる。</div>
+          </div>
+        </div>
+        <div class="impl-item">
+          <div class="impl-icon">→</div>
+          <div class="impl-body">
+            <div class="impl-title">創造の自由</div>
+            <div class="impl-desc">過去の確定性という幻想から離れるとき、現在の生成において、別様の物語を創ることへの開放性が生まれる。</div>
+          </div>
+        </div>
+        <div class="impl-item">
+          <div class="impl-icon">→</div>
+          <div class="impl-body">
+            <div class="impl-title">ただ在ることへの回帰</div>
+            <div class="impl-desc">生成の論理を徹底したとき、「生成しようとしない在り方」そのものが現れてくる。これを本論は起点と呼ぶ。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CODA ── -->
+  <section id="rt-coda" class="coda-section">
+    <div class="wrap">
+      <div class="big reveal">
+        現実はいつも<br>
+        <em>はじめて</em>生まれている。
+      </div>
+      <div>
+        <div onclick="safeSwitchTab('sm')" class="page-link reveal">02 分離マトリックス概論へ進む →</div>
+      </div>
+      <div class="mono-line reveal">
+        t = now &nbsp;|&nbsp; always generating &nbsp;|&nbsp; リアルタイム生成論
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ==========================================
+     TAB 02: 分離マトリックス概論 (SEPARATION MATRIX)
+     ========================================== -->
+<div id="content-sm" class="tab-content">
+
+  <!-- ── HERO ── -->
+  <section id="sm-hero" class="hero-section">
+    <div class="wrap">
+      <div class="kana-label">Introduction to the Separation Matrix</div>
+      <h1>分離<em>マトリックス</em><br>概論</h1>
+      <p class="hero-sub">
+        ワンネスの中に「個」が生じるとき、何が起きているのか。<br>
+        分離という幻構造の生成と、その維持エネルギーを解く。
+      </p>
+      <div class="hero-mono">
+        <span class="sep-indicator"></span>separation as structure / not as truth
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S1: 命題 ── -->
+  <section id="sm-s1">
+    <div class="wrap">
+      <div class="sec-num">01 / 命題</div>
+      <h2>分離は<span class="accent">構造</span>であり、実体ではない</h2>
+
+      <div class="pull">
+        <p>「ワンネスが自らを見るために、鏡を必要とした。その鏡の縁が、分離マトリックスである。」</p>
+      </div>
+
+      <p>
+        私たちが「自分」と「世界」を別々のものとして経験するとき、
+        そこには<strong>分離マトリックス</strong>と呼ぶべき認知・感情・言語の構造が働いている。
+        これは現実の客観的な性質ではなく、意識がある特定の様式で自らを経験するときに生成される<strong>フィルター構造</strong>である。
+      </p>
+
+      <p>
+        重要なのは、この構造を「悪いもの」「乗り越えるべき障害」として扱わないことだ。
+        分離マトリックスはワンネスが現象として現れるための<strong>必要な折り畳み</strong>であり、
+        それ自体もワンネスの表現である。問題は構造の存在ではなく、
+        その構造を<strong>「現実そのもの」と同一視すること</strong>にある。
+      </p>
+
+      <div id="matrix-canvas-wrap">
+        <canvas id="matrixCanvas"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S2: 維持エネルギー ── -->
+  <section id="sm-s2">
+    <div class="wrap">
+      <div class="sec-num">02 / 維持エネルギー</div>
+      <h2>マトリックスを<span class="accent-red">強固にする</span>エネルギー</h2>
+
+      <p>
+        分離マトリックスは一度生成されれば自動的に持続するわけではない。
+        それは特定の思考・感情・行為のパターンによって、<strong>リアルタイムで再生成され続けている</strong>。
+        エネルギーを注ぐことをやめたとき、構造は自然に弛んでいく。
+      </p>
+
+      <div class="energy-grid reveal">
+        <div class="energy-card">
+          <div class="energy-tag">ATTACK</div>
+          <div class="energy-title">批判・非難・攻撃</div>
+          <div class="energy-desc">他者や状況を攻撃するとき、「攻撃する自分」と「攻撃される対象」という二項が強化される。怒りと正義感は分離の最も強力な燃料である。</div>
+        </div>
+        <div class="energy-card">
+          <div class="energy-tag">FIX THE WORLD</div>
+          <div class="energy-title">世界を変えないと／地球を良くしないと</div>
+          <div class="energy-desc">「まだ不完全な世界」があり、「それを変えるべき自分」がいる——この構図そのものが分離を前提とし、その前提を繰り返し刷り込む。</div>
+        </div>
+        <div class="energy-card">
+          <div class="energy-tag">CHANGE OTHERS</div>
+          <div class="energy-title">他者を変えよう</div>
+          <div class="energy-desc">相手が「変わるべきだ」という衝動は、分離した二者の存在を自明とする。変えようとする意図がある限り、分離は確固たる現実として機能し続ける。</div>
+        </div>
+        <div class="energy-card">
+          <div class="energy-tag">SELF-IMPROVEMENT</div>
+          <div class="energy-title">自分を変えよう</div>
+          <div class="energy-desc">「まだ不十分な今の自分」と「あるべき未来の自分」という分割。自己改善への渇望は、向上心ではなく、自己否定を土台とした分離の維持装置になりうる。</div>
+        </div>
+        <div class="energy-card">
+          <div class="energy-tag">NOT HERE / NOT NOW</div>
+          <div class="energy-title">今ではないどこかに</div>
+          <div class="energy-desc">「いつかこうなれば」「あそこに行けば」という意識の逃避。現在から離れようとするすべての動きが、今という生成の場から意識を遠ざけ、分離を維持する。</div>
+        </div>
+        <div class="energy-card">
+          <div class="energy-tag">BECOMING</div>
+          <div class="energy-title">何者かになろう／成功しよう</div>
+          <div class="energy-desc">「まだ何者でもない自分」が「何者かになる」——この物語の中に、固定した自己という幻想が宿っている。なろうとする力が、なれない現在を生み続ける。</div>
+        </div>
+        <div class="energy-card">
+          <div class="energy-tag">WORSHIP</div>
+          <div class="energy-title">崇拝——人・モノ・出来事・神・宇宙人</div>
+          <div class="energy-desc">何かを「自分より上位のもの」として崇めるとき、崇める主体としての自己が強化される。神や宇宙存在への依存もまた、外部と内部という分離の再確認である。</div>
+        </div>
+        <div class="energy-card">
+          <div class="energy-tag">RESISTANCE</div>
+          <div class="energy-title">抵抗——あってはならないものがある</div>
+          <div class="energy-desc">今起きていることへの拒絶は、拒絶する主体と拒絶される現実という二項を固める。抵抗のエネルギーは、抵抗している対象をより実在させる。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S3: 解体と生成論との接続 ── -->
+  <section id="sm-s3">
+    <div class="wrap">
+      <div class="sec-num">03 / 解体</div>
+      <h2>エネルギーが<span class="accent">止まるとき</span></h2>
+
+      <p>
+        維持エネルギーが止まると、分離はほどけていく。
+        これは「ほどこうとする」ことではない——
+        ほどこうとする意図そのものが、またひとつの維持エネルギーになりうるからだ。
+      </p>
+
+      <div class="dissolve-block reveal">
+        <div class="dissolve-title">DISSOLUTION POINT</div>
+        <p class="dissolve-text">
+          変えようとしない。直そうとしない。逃げようとしない。<br>
+          何者かになろうとしない。崇めない。批判しない。<br>
+          <strong>ただ、今起きていることを——そのまま見る。</strong><br><br>
+          見ることが完全であるとき、見ることと見られることの境界が、ひとりでに溶け始める。
+        </p>
+      </div>
+
+      <div class="relation-box reveal">
+        <div class="rel-side">
+          <div class="rel-title">リアルタイム生成論</div>
+          <div class="rel-desc">現実は今この瞬間に生成されている。今にないものは、今に生成される思考として存在する。</div>
+        </div>
+        <div class="rel-arrow">←<br>交差<br>→</div>
+        <div class="rel-side">
+          <div class="rel-title">分離マトリックス</div>
+          <div class="rel-desc">その生成のプロセスが「自分」と「それ以外」に分かれて経験されるとき、マトリックスが働いている。</div>
+        </div>
+      </div>
+
+      <p>
+        維持エネルギーを止めることは、何もしないことではない.
+        それは<strong>今という場に、完全に到着すること</strong>だ。
+        批判も、改善も、崇拝も——すべては「今ではない何か」に向かうベクトルを持っている。
+        そのベクトルが静止するとき、残るのは、ただ在ることだけだ。
+      </p>
+
+      <div class="path-list reveal">
+        <div class="path-item">
+          <div class="path-dot lit">→</div>
+          <div class="path-body">
+            <div class="path-title">気づき——今、どのエネルギーが流れているかを見る</div>
+            <div class="path-desc">「今、自分は何かを批判している」「変えようとしている」「逃げようとしている」——それに気づくだけでいい。変えようとしなくていい。</div>
+          </div>
+        </div>
+        <div class="path-item">
+          <div class="path-dot">→</div>
+          <div class="path-body">
+            <div class="path-title">非介入——そのまま、ある</div>
+            <div class="path-desc">気づいたことに対して、さらに何かをしようとしない。介入しない観察が深まるとき、エネルギーの流れが自然に静まっていく。</div>
+          </div>
+        </div>
+        <div class="path-item">
+          <div class="path-dot">→</div>
+          <div class="path-body">
+            <div class="path-title">ただ在る——分離の溶解点</div>
+            <div class="path-desc">エネルギーが止まった場所に、在ることそのものが現れる。これが分離マトリックスの溶解点であり、リアルタイム生成論の「今」と重なる地点である。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CODA ── -->
+  <section id="sm-coda" class="coda-section">
+    <div class="wrap">
+      <div class="big reveal">
+        エネルギーを止めたとき、<br>
+        分離は<em>ひとりでに</em>溶けていく。
+      </div>
+      <div>
+        <div onclick="safeSwitchTab('ts')" class="page-link reveal">03 才能とシャドウへ進む →</div>
+      </div>
+      <div class="mono-line reveal">
+        separation matrix / 分離マトリックス概論 / oneness expressing itself
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ==========================================
+     TAB 03: 才能とシャドウ (TALENT & SHADOW)
+     ========================================== -->
+<div id="content-ts" class="tab-content">
+
+  <!-- ── HERO ── -->
+  <section id="ts-hero" class="hero-section">
+    <div class="wrap">
+      <div class="kana-label">Equivalence of Talent and Shadow</div>
+      <h1>才能と<br><em>シャドウ</em></h1>
+      <p class="hero-sub">
+        あなたの最も深い闇（嫌悪・心の傷）は、最もまばゆい光（ギフト・才能）の裏返し。<br>
+        在ることを認めたとき、閉じ込められていたバイブス（震え）が開き出す。
+      </p>
+      <div class="hero-mono">
+        <span class="sep-indicator"></span>shadow as restricted vibe / talent as liberated expression
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S1: 命題 ── -->
+  <section id="ts-s1">
+    <div class="wrap">
+      <div class="sec-num">01 / 命題</div>
+      <h2>同じ一つの<span class="accent">「震え（バイブス）」</span>の諸相</h2>
+
+      <div class="pull">
+        <p>「ギフト（才能）の震えを閉じ込めるとシャドウになり、解放すると才能として現れる。シャドウとギフトは、同じ震えを抑圧しているか解放しているかの違いに過ぎない。」</p>
+      </div>
+
+      <p>
+        私たちは、自分の中の嫌な部分、受け入れがたい性質を「直さなければならない欠点」や「克服すべきシャドウ」として隔離しようとする。
+        しかし、その排除しようとする行為自体が、エネルギーの強固な<strong>「閉じ込め（抑圧）」</strong>を生み出している。
+      </p>
+
+      <p>
+        シャドウを<strong>「消そう、直そう、統合しよう、どうにかしよう」とコントロールを試みるほど、抵抗が生まれ、シャドウはより色濃く、実体的な障壁となってあなたを縛りつけていく。</strong>
+        「どうにかしよう」とする作為のエネルギーは、それが肯定的な変革への欲望であっても、内なる二極化をさらに強固にするだけである。
+      </p>
+
+      <p>
+        唯一の鍵は、何かを操作しようと躍起になるのをやめ、<strong>ただそこにそのエネルギーが「在ること」を完全に認めること</strong>。
+        介入の手を止めてありのままを認めた瞬間、それまで狭い枠に閉じ込められ、不調和に摩擦を起こしていたバイブス（震え）が自然に開き出し、独自の輝きを放つ才能（ギフト）として今この瞬間に現れ始める。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── S2: 抑制の力学（シミュレーション） ── -->
+  <section id="ts-s2">
+    <div class="wrap">
+      <div class="sec-num">02 / 力学</div>
+      <h2>作為を解き、<span class="accent">「在ることを認める」</span>シミュレーション</h2>
+
+      <p>
+        以下のインタラクティブ・シミュレーターで、その抑制の動態を体感してほしい。<br>
+        スライダーを右に引いて、シャドウを「どうにかしよう」と作為や抵抗を強めるほど、両者の間には分厚く緊迫した障壁が立ち塞がり、不調和な火花（シャドウ）が色濃く激しくなっていきます。
+        逆にスライダーを左へ戻し、介入をやめ「ただ在ることを認める」ほど、閉じていたバイブスがなめらかに開き、調和したまばゆい光（才能）へ還っていきます。
+      </p>
+
+      <div class="simulator-container reveal">
+        <div id="shadow-canvas-wrap">
+          <canvas id="shadowCanvas"></canvas>
+        </div>
+        <div class="slider-control">
+          <div class="slider-label-row">
+            <span>← ただ在ることを認める（解放・開いたバイブス）</span>
+            <span>どうにかしようとする作為（抑圧・消そうとする抵抗） →</span>
+          </div>
+          <div class="slider-input-wrap">
+            <input type="range" id="tension-slider" class="tension-slider" min="0" max="100" value="50">
+            <span class="slider-val" id="slider-val-text">50%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── S3: 等価マッピング ── -->
+  <section id="ts-s3">
+    <div class="wrap">
+      <div class="sec-num">03 / 等価表</div>
+      <h2>震えの現れ方：<span class="accent">シャドウとギフトの等価表</span></h2>
+
+      <p>
+        あなたが「欠点」と呼び排除しようとしていた震えが、ただ在ることを認められたときにどのようなギフトへ開花するか。
+        同じ一つのエネルギーが示す、二つの極を以下に示す。
+      </p>
+
+      <div class="term-grid reveal">
+        <div class="term-card">
+          <div class="term-jp" style="color: var(--red-bright);">過敏さ・傷つきやすさ</div>
+          <div class="term-en">SHADOW: HYPERSENSITIVE</div>
+          <div class="term-def">刺激を閉じ込めてしまい、ひどく傷つき、世界を拒絶して自らの内に閉ざしてしまうシャドウ（震えの不調和状態）。</div>
+          <div class="term-jp" style="color: var(--accent); margin-top: 1.2rem;">圧倒的な高解像度の共感・芸術性</div>
+          <div class="term-en">GIFT: DEEP RESONANCE</div>
+          <div class="term-def">在ることを認めバイブスが開くと、微細な心の機微やエネルギーを精緻に捉え、表現する類稀な感性となる。</div>
+        </div>
+
+        <div class="term-card">
+          <div class="term-jp" style="color: var(--red-bright);">コントロール欲・支配欲</div>
+          <div class="term-en">SHADOW: CONTROLLING</div>
+          <div class="term-def">不安から、状況や他者すべてを自分の支配下に置こうと躍起になり強制を強めるシャドウ（震えの不調和状態）。</div>
+          <div class="term-jp" style="color: var(--accent); margin-top: 1.2rem;">卓越した構築力・調和のビジョン</div>
+          <div class="term-en">GIFT: SYSTEM ARCHITECT</div>
+          <div class="term-def">介入の力を抜いたとき、混沌から全体のバランスを読み解き、真に美しい調和的な仕組みを編む知性となる。</div>
+        </div>
+
+        <div class="term-card">
+          <div class="term-jp" style="color: var(--red-bright);">反逆性・協調性のなさ</div>
+          <div class="term-en">SHADOW: REBELLIOUS</div>
+          <div class="term-def">既存の秩序や他者の意図すべてに激しい嫌悪を覚え、あえて周囲を敵に回す摩擦を生み出すシャドウ（震えの不調和状態）。</div>
+          <div class="term-jp" style="color: var(--accent); margin-top: 1.2rem;">未踏のフロンティアを開く開拓精神</div>
+          <div class="term-en">GIFT: VISIONARY PIONEER</div>
+          <div class="term-def">反抗としての抵抗が止むとき、常識に囚われず、生命の躍動に従って新時代の道を勇敢に切り拓く純粋な突破力となる。</div>
+        </div>
+
+        <div class="term-card">
+          <div class="term-jp" style="color: var(--red-bright);">承認欲求・孤独の恐れ</div>
+          <div class="term-en">SHADOW: ATTENTION SEEKER</div>
+          <div class="term-def">「他者に価値を認めてもらわなければ消えてしまう」という恐怖から、自らを誇張し依存するシャドウ（震えの不調和状態）。</div>
+          <div class="term-jp" style="color: var(--accent); margin-top: 1.2rem;">人々の生命を揺り動かすカリスマ性</div>
+          <div class="term-en">GIFT: CHARISMATIC COMPASSION</div>
+          <div class="term-def">恐れを手放し、ただ在るだけで人々の心に寄り添い、その凍りついた感情を暖かく溶かして解放する表現力へと昇華する。</div>
+        </div>
+      </div>
+
+      <p style="margin-top: 3rem;">
+        シャドウを「消そう、直そう、統合しよう、どうにかしよう」と抵抗し続けること自体が、分離マトリックス（02）をさらに駆動し、現在という生成の場（01）からの逃避となってしまいます。
+        ただ、あなたを震わせているそのユニークなバイブスを、<strong>「今、ここに在る」と認めて、息を吐き出すこと。</strong>
+        その非介入のスペースで、同じ「震え」は本来のギフトとして自然に呼吸を始めます。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── CODA ── -->
+  <section id="ts-coda" class="coda-section">
+    <div class="wrap">
+      <div class="big reveal">
+        バイブスを開いたとき、<br>
+        すべての影は<em>本来の光</em>として歌い出す。
+      </div>
+      <div>
+        <div onclick="safeSwitchTab('rt')" class="page-link reveal">← 01 リアルタイム生成論へ戻る</div>
+      </div>
+      <div class="mono-line reveal">
+        equivalence &nbsp;|&nbsp; shadow and talent &nbsp;|&nbsp; 才能とシャドウ
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ── グローバル変数・状態管理 ── */
+// 全てのタブ切り替えやレイアウト動作を最上部のbody要素に直結させます
+let currentTab = 'rt'; 
+let waveAnimFrameId = null;
+let matrixAnimFrameId = null;
+let shadowAnimFrameId = null;
+let suppressionVal = 50; // スライダー値
+
+// DOM要素参照（安全な初期化のためにnullで宣言）
+let cosmos = null, ctx = null;
+let wc = null, wCtx = null;
+let mc = null, mCtx = null;
+let sc = null, sCtx = null;
+let sliderEl = null, sliderValText = null;
+
+let W, H, particles = [];
+let wW, wH;
+let mW, mH;
+let sW, sH;
+
+/* ── 共通: 宇宙の星屑背景 (Cosmos Particles) ── */
+function resizeCosmos() {
+  if (!cosmos) return;
+  try {
+    W = cosmos.width = window.innerWidth;
+    H = cosmos.height = window.innerHeight;
+  } catch(e) {}
+}
+
+function mkParticle() {
+  const types = ['accent', 'blue', 'dim', 'amber'];
+  const t = types[Math.floor(Math.random() * 4)];
+  return {
+    x: Math.random() * (W || window.innerWidth || 800),
+    y: Math.random() * (H || window.innerHeight || 600),
+    r: Math.random() * 1.2 + 0.2,
+    vx: (Math.random() - 0.5) * 0.12,
+    vy: (Math.random() - 0.5) * 0.12,
+    a: Math.random(),
+    da: (Math.random() - 0.5) * 0.006,
+    born: performance.now(),
+    life: 9000 + Math.random() * 12000,
+    type: t
+  };
+}
+
+function initParticles() {
+  particles = Array.from({length: 200}, mkParticle);
+}
+
+function getParticleColor(p, fade) {
+  const a = fade * p.a * 0.55;
+  if (currentTab === 'rt') {
+    if (p.type === 'accent' || p.type === 'blue') {
+      return `rgba(74,158,202,${a * 0.7})`; // ブルー
+    } else if (p.type === 'amber') {
+      return `rgba(200,147,74,${a * 0.15})`; // 琥珀
+    }
+    return `rgba(58,85,104,${a * 0.5})`; // ディム
+  } else if (currentTab === 'sm') {
+    if (p.type === 'accent' || p.type === 'amber') {
+      return `rgba(200,147,74,${a * 0.7})`; // 琥珀
+    } else if (p.type === 'blue') {
+      return `rgba(74,158,202,${a * 0.15})`; // ブルー
+    }
+    return `rgba(74,104,128,${a * 0.5})`; // ディム
+  } else {
+    // ts (Talent & Shadow) タブ
+    if (p.type === 'accent' || p.type === 'blue') {
+      return `rgba(168,85,247,${a * 0.7})`; // パープル
+    } else if (p.type === 'amber') {
+      return `rgba(200,147,74,${a * 0.3})`; // ゴールド
+    }
+    return `rgba(78,64,102,${a * 0.5})`; // ディム
+  }
+}
+
+function drawCosmos(t) {
+  if (!ctx) return;
+  try {
+    ctx.clearRect(0, 0, W, H);
+    particles = particles.map(p => {
+      const age = t - p.born;
+      if (age > p.life) return mkParticle();
+      const fade = Math.min(age / 800, 1) * Math.min((p.life - age) / 800, 1);
+      p.x = (p.x + p.vx + W) % W;
+      p.y = (p.y + p.vy + H) % H;
+      p.a = Math.max(0, Math.min(1, p.a + p.da));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = getParticleColor(p, fade);
+      ctx.fill();
+      return p;
+    });
+  } catch(e) {}
+  requestAnimationFrame(drawCosmos);
+}
+
+
+/* ── TAB 1: リアルタイム生成論 - Wave Canvas ── */
+function resizeWave() {
+  if (!wc) return;
+  try {
+    wW = wc.width  = wc.offsetWidth;
+    wH = wc.height = wc.offsetHeight;
+  } catch(e) {}
+}
+
+function drawWave(t) {
+  if (currentTab !== 'rt' || !wCtx) {
+    waveAnimFrameId = null;
+    return;
+  }
+  try {
+    wCtx.clearRect(0, 0, wW, wH);
+    const layers = [
+      { amp: 18, freq: 0.018, speed: 0.8,  alpha: 0.6,  offset: 0 },
+      { amp: 10, freq: 0.028, speed: 1.2,  alpha: 0.35, offset: 1.5 },
+      { amp: 24, freq: 0.011, speed: 0.5,  alpha: 0.2,  offset: 3.0 },
+    ];
+
+    layers.forEach(l => {
+      wCtx.beginPath();
+      for (let x = 0; x <= wW; x += 2) {
+        const y = wH / 2 + Math.sin(x * l.freq + t * l.speed + l.offset) * l.amp;
+        x === 0 ? wCtx.moveTo(x, y) : wCtx.lineTo(x, y);
+      }
+      wCtx.strokeStyle = `rgba(74,158,202,${l.alpha})`;
+      wCtx.lineWidth = 1;
+      wCtx.stroke();
+    });
+
+    /* now dot */
+    const nx = (t * 60) % wW;
+    const ny = wH / 2 + Math.sin(nx * 0.018 + t * 0.8) * 18;
+    wCtx.beginPath();
+    wCtx.arc(nx, ny, 4, 0, Math.PI * 2);
+    wCtx.fillStyle = '#4a9eca';
+    wCtx.fill();
+  } catch(e) {}
+
+  waveAnimFrameId = requestAnimationFrame(() => drawWave(t + 0.016));
+}
+
+
+/* ── TAB 2: 分離マトリックス概論 - Matrix Canvas ── */
+function resizeMatrix() {
+  if (!mc) return;
+  try {
+    mW = mc.width = mc.offsetWidth;
+    mH = mc.height = mc.offsetHeight;
+  } catch(e) {}
+}
+
+const COLS = 28, ROWS = 10;
+const cells = Array.from({length: ROWS * COLS}, () => ({
+  opacity: Math.random() * 0.4 + 0.05,
+  dop: (Math.random() - 0.5) * 0.008,
+  phase: Math.random() * Math.PI * 2
+}));
+
+function drawMatrix(t) {
+  if (currentTab !== 'sm' || !mCtx) {
+    matrixAnimFrameId = null;
+    return;
+  }
+  try {
+    mCtx.clearRect(0, 0, mW, mH);
+    const cw = mW / COLS, ch = mH / ROWS;
+    cells.forEach((cell, i) => {
+      const col = i % COLS, row = Math.floor(i / COLS);
+      cell.opacity += cell.dop;
+      if (cell.opacity > 0.5 || cell.opacity < 0.02) cell.dop *= -1;
+      const pulse = Math.sin(t * 0.6 + cell.phase) * 0.03;
+      const op = Math.max(0, cell.opacity + pulse);
+      mCtx.strokeStyle = `rgba(200,147,74,${op})`;
+      mCtx.lineWidth = 0.5;
+      mCtx.strokeRect(col * cw + 1, row * ch + 1, cw - 2, ch - 2);
+    });
+    const grad = mCtx.createRadialGradient(mW / 2, mH / 2, 0, mW / 2, mH / 2, mW * 0.35);
+    grad.addColorStop(0, `rgba(200,147,74,${0.12 + Math.sin(t * 0.4) * 0.04})`);
+    grad.addColorStop(1, 'rgba(200,147,74,0)');
+    mCtx.fillStyle = grad;
+    mCtx.fillRect(0, 0, mW, mH);
+
+    mCtx.font = '10px Space Mono, monospace';
+    mCtx.fillStyle = 'rgba(74,104,128,0.7)';
+    mCtx.fillText('SEPARATION MATRIX / FIELD VIEW', 12, mH - 10);
+  } catch(e) {}
+
+  matrixAnimFrameId = requestAnimationFrame(() => drawMatrix(t + 0.016));
+}
+
+
+/* ── TAB 3: 才能とシャドウ - Shadow & Talent Simulator Canvas ── */
+function resizeShadow() {
+  if (!sc) return;
+  try {
+    sW = sc.width = sc.offsetWidth;
+    sH = sc.height = sc.offsetHeight;
+  } catch(e) {}
+}
+
+function drawShadow(t) {
+  if (currentTab !== 'ts' || !sCtx) {
+    shadowAnimFrameId = null;
+    return;
+  }
+  try {
+    sCtx.clearRect(0, 0, sW, sH);
+
+    const cx = sW / 2;
+    const cy = sH / 2;
+    const separation = suppressionVal * 1.6; // 抑制・作為が強いほど物理的に隔離
+    
+    // ── 1. シャドウ（抑圧された震え）球体を描画 (Left) ──
+    const sx = cx - 45 - separation * 0.35;
+    const sGrad = sCtx.createRadialGradient(sx, cy, 2, sx, cy, 45 + Math.sin(t * 5) * 5);
+    
+    const redFactor = suppressionVal / 100;
+    const pColor = `rgba(${Math.floor(100 + 120 * redFactor)}, ${Math.floor(60 - 40 * redFactor)}, ${Math.floor(180 - 100 * redFactor)}, ${0.6 + 0.3 * redFactor})`;
+    
+    sGrad.addColorStop(0, '#ffffff');
+    sGrad.addColorStop(0.3, pColor);
+    sGrad.addColorStop(0.7, `rgba(${Math.floor(80 + 140 * redFactor)}, 20, ${Math.floor(140 - 100 * redFactor)}, 0.4)`);
+    sGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    
+    sCtx.beginPath();
+    sCtx.arc(sx, cy, 60, 0, Math.PI * 2);
+    sCtx.fillStyle = sGrad;
+    sCtx.fill();
+
+    sCtx.font = '9px Space Mono, monospace';
+    sCtx.fillStyle = suppressionVal > 50 ? '#e07070' : '#c084fc';
+    sCtx.textAlign = 'center';
+    sCtx.fillText('SHADOW', sx, cy - 70);
+    sCtx.font = '8px Noto Sans JP';
+    sCtx.fillText(suppressionVal > 50 ? '閉じ込められた不調和' : 'ただ在る震え', sx, cy + 70);
+
+    // ── 2. ギフト（解放された震え）球体を描画 (Right) ──
+    const tx = cx + 45 + separation * 0.35;
+    const tGrad = sCtx.createRadialGradient(tx, cy, 2, tx, cy, 45 + Math.sin(t * 6) * 5);
+    
+    tGrad.addColorStop(0, '#ffffff');
+    tGrad.addColorStop(0.3, 'rgba(168, 85, 247, 0.8)');
+    tGrad.addColorStop(0.7, 'rgba(74, 158, 202, 0.4)');
+    tGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    
+    sCtx.beginPath();
+    sCtx.arc(tx, cy, 60, 0, Math.PI * 2);
+    sCtx.fillStyle = tGrad;
+    sCtx.fill();
+
+    sCtx.font = '9px Space Mono, monospace';
+    sCtx.fillStyle = '#e9d5ff';
+    sCtx.fillText('GIFT (TALENT)', tx, cy - 70);
+    sCtx.font = '8px Noto Sans JP';
+    sCtx.fillText(suppressionVal > 50 ? '隠された本質' : '美しく開いたバイブス', tx, cy + 70);
+
+    // ── 3. 中央の相互作用領域（作為 vs 非介入）の描画 ──
+    if (suppressionVal > 15) {
+      const barrierAlpha = Math.min(1, (suppressionVal - 15) / 60);
+      const barrierWidth = (suppressionVal / 100) * 10;
+      
+      sCtx.beginPath();
+      sCtx.moveTo(cx, cy - 90);
+      sCtx.lineTo(cx, cy + 90);
+      sCtx.strokeStyle = `rgba(${Math.floor(220 + 35 * (suppressionVal/100))}, ${Math.floor(112 - 80 * (suppressionVal/100))}, ${Math.floor(112 - 80 * (suppressionVal/100))}, ${barrierAlpha * 0.9})`;
+      sCtx.lineWidth = barrierWidth;
+      sCtx.shadowColor = '#e07070';
+      sCtx.shadowBlur = barrierWidth * 2.5;
+      sCtx.stroke();
+      sCtx.shadowBlur = 0; // シャドウリセット
+
+      sCtx.fillStyle = `rgba(224, 112, 112, ${barrierAlpha * 0.95})`;
+      sCtx.font = '8px Space Mono, monospace';
+      sCtx.fillText('RESISTANCE BARRIER', cx, cy - 100);
+      sCtx.font = '7px Noto Sans JP';
+      sCtx.fillText('「消そう・直そうとする作為」の厚さ', cx, cy - 110);
+
+      const sparkCount = Math.floor(suppressionVal / 10);
+      for (let i = 0; i < sparkCount; i++) {
+        const sy_spark = cy + (Math.random() - 0.5) * 160;
+        const len = Math.random() * 25 + 5;
+        sCtx.beginPath();
+        sCtx.moveTo(cx - len / 2, sy_spark);
+        sCtx.lineTo(cx + len / 2, sy_spark + (Math.random() - 0.5) * 12);
+        sCtx.strokeStyle = 'rgba(240, 110, 110, 0.95)';
+        sCtx.lineWidth = 1;
+        sCtx.stroke();
+      }
+    } else {
+      const resonanceAlpha = (15 - suppressionVal) / 15;
+      const pulseRadius = 55 + Math.sin(t * 8) * 20;
+
+      sCtx.beginPath();
+      sCtx.arc(cx, cy, pulseRadius, 0, Math.PI * 2);
+      const pulseGrad = sCtx.createRadialGradient(cx, cy, 0, cx, cy, pulseRadius);
+      pulseGrad.addColorStop(0, `rgba(244, 215, 255, ${resonanceAlpha * 0.7})`);
+      pulseGrad.addColorStop(0.5, `rgba(200, 147, 74, ${resonanceAlpha * 0.35})`);
+      pulseGrad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+      sCtx.fillStyle = pulseGrad;
+      sCtx.fill();
+
+      sCtx.beginPath();
+      sCtx.moveTo(sx, cy);
+      sCtx.bezierCurveTo(cx - 15, cy - Math.sin(t * 4.5) * 20, cx + 15, cy + Math.sin(t * 4.5) * 20, tx, cy);
+      sCtx.strokeStyle = `rgba(233, 213, 255, ${resonanceAlpha * 0.85})`;
+      sCtx.lineWidth = 2;
+      sCtx.stroke();
+
+      sCtx.fillStyle = `rgba(200, 147, 74, ${resonanceAlpha * 0.95})`;
+      sCtx.font = '8px Space Mono, monospace';
+      sCtx.fillText('LIBERATED RESONANCE', cx, cy - 100);
+      sCtx.font = '7px Noto Sans JP';
+      sCtx.fillText('ただ在ることを認めた瞬間、震えが開花する', cx, cy - 110);
+    }
+  } catch(e) {}
+
+  shadowAnimFrameId = requestAnimationFrame(() => drawShadow(t + 0.016));
+}
+
+
+/* ── 段階的コンテンツ監視 (Scrollspyフォールバック付) ── */
+let io = null;
+function observeElements() {
+  try {
+    if (io) io.disconnect();
+    io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          if (e.target.classList.contains('time-diagram')) {
+            e.target.querySelectorAll('.time-row').forEach((row) => {
+              const delay = parseInt(row.dataset.delay || 0);
+              setTimeout(() => {
+                row.classList.add('visible');
+                const bar = row.querySelector('.time-bar');
+                if (bar) bar.style.width = bar.dataset.w + '%';
+              }, delay);
+            });
+          }
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.reveal, .time-diagram').forEach(el => io.observe(el));
+  } catch (e) {
+    // 共有用iFrameでIntersectionObserverが完全にブロックされた場合の強制フォールバック
+    document.querySelectorAll('.reveal, .time-diagram').forEach(el => {
+      el.classList.add('visible');
+      el.querySelectorAll('.time-row').forEach(row => {
+        row.classList.add('visible');
+        const bar = row.querySelector('.time-bar');
+        if (bar) bar.style.width = bar.dataset.w + '%';
+      });
+    });
+  }
+}
+
+
+/* ── スクロール位置に基づくドット点灯制御 (安全ガード付) ── */
+let scrollSpyObserver = null;
+const spyCallback = entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      if (currentTab === 'rt') {
+        const idx = sectionsRt.indexOf(id);
+        if (idx !== -1 && dotsRt.length > 0) {
+          dotsRt.forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+      } else if (currentTab === 'sm') {
+        const idx = sectionsSm.indexOf(id);
+        if (idx !== -1 && dotsSm.length > 0) {
+          dotsSm.forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+      } else {
+        const idx = sectionsTs.indexOf(id);
+        if (idx !== -1 && dotsTs.length > 0) {
+          dotsTs.forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+      }
+    }
+  });
+};
+
+function initScrollSpy() {
+  try {
+    if (scrollSpyObserver) scrollSpyObserver.disconnect();
+    scrollSpyObserver = new IntersectionObserver(spyCallback, { threshold: 0.4 });
+    sectionsRt.concat(sectionsSm).concat(sectionsTs).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) scrollSpyObserver.observe(el);
+    });
+  } catch (e) {}
+}
+
+
+/* ── 🪐 【超耐久インライン設計】どんな環境でも100%動くタブ切り替え＆スクロール ── */
+
+// 1. 【100%バグらないグローバルタブ切り替え命令】
+window.safeSwitchTab = function(targetTab) {
+  try {
+    if (!targetTab) return;
+    currentTab = targetTab;
+    
+    // 最上部親要素 body のクラスを切り替え（CSSの強制表示を即トリガー）
+    document.body.className = 'theme-' + targetTab;
+
+    // ヘッダーメニューの非アクティブ線を同期補正
+    const tabLinks = document.querySelectorAll('.site-nav-a');
+    tabLinks.forEach(link => {
+      if (link) {
+        const isActive = link.getAttribute('data-tab') === targetTab;
+        link.classList.toggle('active', isActive);
+      }
+    });
+
+    // 各セクションの表示制御（display: none / block）をCSSとJSの二重で強制
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(content => {
+      if (content) {
+        const isTarget = content.id === 'content-' + targetTab;
+        content.style.display = isTarget ? 'block' : 'none';
+      }
+    });
+
+    // ページトップへ瞬間スクロール（セキュリティ制約対応）
+    try {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    } catch (e) {
+      try { document.documentElement.scrollTop = 0; } catch (e2) {}
+    }
+
+    // 描画関連のリサイズおよび初期化
+    try {
+      if (targetTab === 'rt') {
+        resizeWave();
+        if (!waveAnimFrameId) drawWave(0);
+      } else if (targetTab === 'sm') {
+        resizeMatrix();
+        if (!matrixAnimFrameId) drawMatrix(0);
+      } else {
+        resizeShadow();
+        if (!shadowAnimFrameId) drawShadow(0);
+      }
+    } catch (e) {}
+  } catch (err) {
+    console.error("Critical error in safeSwitchTab:", err);
+  }
+};
+
+// 2. 【100%バグらないスクロール命令】
+window.safeScrollTo = function(elementId) {
+  try {
+    const el = document.getElementById(elementId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  } catch (err) {
+    try {
+      const el = document.getElementById(elementId);
+      if (el) {
+        window.scrollTo(0, el.offsetTop - 60);
+      }
+    } catch (e2) {}
+  }
+};
+
+
+/* ── 統合された安全な初期化処理 ── */
+function initApp() {
+  if (cosmos && ctx) return; // 二重実行を防止
+
+  try {
+    cosmos = document.getElementById('cosmos');
+    if (cosmos) ctx = cosmos.getContext('2d');
+  } catch (e) {}
+
+  try {
+    wc = document.getElementById('waveCanvas');
+    if (wc) wCtx = wc.getContext('2d');
+  } catch (e) {}
+
+  try {
+    mc = document.getElementById('matrixCanvas');
+    if (mc) mCtx = mc.getContext('2d');
+  } catch (e) {}
+
+  try {
+    sc = document.getElementById('shadowCanvas');
+    if (sc) sCtx = sc.getContext('2d');
+  } catch (e) {}
+
+  try {
+    sliderEl = document.getElementById('tension-slider');
+    sliderValText = document.getElementById('slider-val-text');
+    if (sliderEl) {
+      sliderEl.addEventListener('input', (e) => {
+        suppressionVal = parseInt(e.target.value);
+        if (sliderValText) sliderValText.textContent = suppressionVal + '%';
+      });
+    }
+  } catch (e) {}
+
+  // ナビゲーション右側ドット要素の取得
+  try {
+    dotsRt = document.querySelectorAll('#dots-rt .dot');
+    dotsSm = document.querySelectorAll('#dots-sm .dot');
+    dotsTs = document.querySelectorAll('#dots-ts .dot');
+  } catch (e) {}
+
+  // キャンバス測定・寸法調整
+  try { resizeCosmos(); } catch(e){}
+  try { initParticles(); } catch(e){}
+  try { resizeWave(); } catch(e){}
+  try { resizeMatrix(); } catch(e){}
+  try { resizeShadow(); } catch(e){}
+
+  // 監視のバインド
+  observeElements();
+  initScrollSpy();
+
+  // 背景と現在タブのアニメーションを並行キック
+  try {
+    if (ctx) drawCosmos(performance.now());
+  } catch (e) {}
+
+  try {
+    if (currentTab === 'rt' && wCtx) {
+      drawWave(0);
+    } else if (currentTab === 'sm' && mCtx) {
+      drawMatrix(0);
+    } else if (currentTab === 'ts' && sCtx) {
+      drawShadow(0);
+    }
+  } catch (e) {}
+}
+
+// リサイズ時に安全に寸法を再計算
+window.addEventListener('resize', () => {
+  try {
+    resizeCosmos();
+    if (currentTab === 'rt') {
+      resizeWave();
+    } else if (currentTab === 'sm') {
+      resizeMatrix();
+    } else {
+      resizeShadow();
+    }
+  } catch (e) {}
+});
+
+// DOMロード状況に依存せず、見つかった瞬間に即時、何回でも結合処理を実行（二重保証）
+try {
+  initApp();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  }
+} catch (e) {
+  initApp();
+}
+window.addEventListener('load', initApp);
+</script>
+</body>
+</html>
