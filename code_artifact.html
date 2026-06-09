@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ひとつの震え 〜社会のシャドウとギフト〜</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Serif JP for Japanese, Cinzel for English headers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Serif JP', serif;
+            background-color: #030306;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+        
+        /* カスタムスクロールバー */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030306;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1a1a24;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #333344;
+        }
+
+        /* スライダーのカスタムスタイリング */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid #030306;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 35px rgba(255, 255, 255, 1), 0 0 15px rgba(255, 255, 255, 0.6);
+        }
+        
+        /* 幻想的な背景の光（ぼかしオーラ） */
+        .glow-sphere {
+            filter: blur(130px);
+            pointer-events: none;
+            transition: all 1.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            mix-blend-mode: screen;
+        }
+
+        /* 脈打つアニメーション */
+        @keyframes subtle-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.03); opacity: 0.9; }
+        }
+        .pulse-ambient {
+            animation: subtle-pulse 7s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between relative overflow-hidden">
+
+    <!-- 動的に変化する深層オーラ背景（他者の心情、社会の雰囲気を表す） -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <!-- シャドウの敵意・攻撃性・拒絶の赤黒い光 -->
+        <div id="bg-glow-shadow-left" class="absolute -top-1/4 -left-1/4 w-[75vw] h-[75vw] rounded-full bg-red-950/40 glow-sphere opacity-100"></div>
+        <div id="bg-glow-shadow-right" class="absolute -bottom-1/4 -right-1/4 w-[65vw] h-[65vw] rounded-full bg-purple-950/30 glow-sphere opacity-80"></div>
+        
+        <!-- ギフトの慈愛・優しさ・繋がりのパステル光 -->
+        <div id="bg-glow-gift-gold" class="absolute top-1/4 left-1/3 w-[70vw] h-[70vw] rounded-full bg-amber-950/0 glow-sphere opacity-0"></div>
+        <div id="bg-glow-gift-rose" class="absolute -bottom-1/4 left-1/4 w-[65vw] h-[65vw] rounded-full bg-rose-950/0 glow-sphere opacity-0"></div>
+        <div id="bg-glow-gift-emerald" class="absolute -top-1/4 right-1/4 w-[60vw] h-[60vw] rounded-full bg-emerald-950/0 glow-sphere opacity-0"></div>
+    </div>
+
+    <!-- ヘッダーエリア -->
+    <header class="w-full py-5 px-6 md:px-12 flex justify-between items-center z-10 border-b border-white/5 backdrop-blur-md bg-black/20">
+        <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" id="header-status-dot"></span>
+                <h1 class="text-lg md:text-2xl font-semibold tracking-[0.2em] text-white/90">ひとつの震え</h1>
+            </div>
+            <p class="text-[10px] md:text-xs text-white/40 tracking-[0.15em] font-cinzel mt-1">THE TREMBLE: THE MIRROR OF SOCIETY & OTHER</p>
+        </div>
+        
+        <!-- 音源コントロール -->
+        <div class="flex items-center gap-4">
+            <button id="btn-audio-toggle" class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all text-xs tracking-wider text-white/80">
+                <i class="fa-solid fa-volume-xmark text-red-400" id="audio-icon"></i>
+                <span id="audio-text">音響: OFF</span>
+            </button>
+            <div class="text-right max-md:hidden">
+                <span class="text-xs text-white/40 tracking-wider">投影世界の変容</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="flex-grow flex flex-col items-center justify-center relative px-4 py-6 z-10 w-full max-w-7xl mx-auto">
+        
+        <!-- 社会・他者の状態を反映するメッセージ -->
+        <div class="text-center mb-6 h-24 md:h-28 flex flex-col justify-center items-center px-4">
+            <p id="world-state-title" class="text-xl md:text-3xl font-light tracking-[0.2em] transition-all duration-700 ease-out text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.2)]">
+                敵対する社会：牙を剥く他者
+            </p>
+            <p id="world-state-desc" class="text-xs md:text-sm tracking-[0.1em] text-white/60 mt-2 max-w-2xl leading-relaxed transition-all duration-700">
+                心を閉ざし、自身の震えを「異常」として隠すとき、世界は敵意に満ちた鏡となります。他者は脅威となり、突き刺さる言葉と視線が四方からあなたを攻撃してきます。
+            </p>
+            <p id="world-state-en" class="text-[10px] md:text-xs tracking-[0.25em] text-white/30 font-cinzel mt-2 uppercase transition-all duration-700">
+                HOSTILE SOCIETY: THE ATTACKING MIRROR OF SHADOW
+            </p>
+        </div>
+
+        <!-- インタラクティブ・キャンバスコンテナ -->
+        <div class="relative w-full max-w-[580px] aspect-square rounded-full border border-white/10 flex items-center justify-center overflow-hidden bg-black/75 backdrop-blur-xl shadow-[0_0_80px_rgba(0,0,0,0.9)] group">
+            
+            <!-- メインキャンバス（自分、社会の壁、攻撃する他者、愛を贈る他者をすべて描画） -->
+            <canvas id="mainCanvas" class="absolute inset-0 w-full h-full cursor-pointer"></canvas>
+            
+            <!-- 中央の核：「私の震えのコア」 -->
+            <div id="soul-core" class="w-12 h-12 rounded-full bg-white blur-[1px] z-20 shadow-[0_0_40px_#fff] transition-all duration-300 flex items-center justify-center text-[10px] text-black font-bold select-none pointer-events-none">
+                自分
+            </div>
+            
+            <!-- 防衛シールド（シャドウ時、他者の攻撃を防ぐために固く閉ざされた殻） -->
+            <div id="defense-barrier" class="absolute w-32 h-32 border-2 border-red-500/60 rounded-full z-15 transition-all duration-500 opacity-100 flex items-center justify-center animate-pulse">
+                <div class="w-28 h-28 border border-purple-500/30 rounded-full border-dashed"></div>
+            </div>
+
+            <!-- タッチ・ホバー時のインタラクティブ波紋コンテナ -->
+            <div id="interactive-ripple-layer" class="absolute inset-0 pointer-events-none z-25"></div>
+        </div>
+
+        <!-- 空中に浮かぶ他者からのメッセージ・視線ワードのコンテナ -->
+        <div id="floating-emotions-container" class="absolute inset-0 pointer-events-none z-30 overflow-hidden"></div>
+
+    </main>
+
+    <!-- フッター・コントロールパネル -->
+    <footer class="w-full max-w-5xl mx-auto px-6 py-6 md:py-8 z-10 bg-black/65 backdrop-blur-2xl rounded-t-[2.5rem] border-t border-white/10 flex flex-col gap-6">
+        
+        <!-- 変容コントロールスライダー -->
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between items-center text-xs tracking-wider">
+                <!-- 閉じ込める側（左） -->
+                <button id="quick-shadow" class="text-red-400 font-semibold hover:text-red-300 transition-colors flex items-center gap-1.5 group">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-600 group-hover:scale-125 transition-transform"></span>
+                    閉ざす（社会が敵 / 他者の攻撃）
+                </button>
+                
+                <!-- パーセンテージ表示 -->
+                <div class="flex flex-col items-center">
+                    <span id="txt-percentage" class="font-cinzel text-sm font-bold tracking-[0.15em] text-white">0% LIBERATED</span>
+                    <span class="text-[9px] text-white/40 tracking-widest mt-0.5">SOCIETY CONNECTION</span>
+                </div>
+                
+                <!-- 解放する側（右） -->
+                <button id="quick-gift" class="text-emerald-400 font-semibold hover:text-emerald-300 transition-colors flex items-center gap-1.5 group">
+                    ひらく（社会が天国 / 他者の愛）
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 group-hover:animate-ping"></span>
+                </button>
+            </div>
+            
+            <!-- スライダー本体 -->
+            <div class="relative w-full flex items-center">
+                <div class="absolute left-0 right-0 h-1 rounded bg-gradient-to-r from-red-600 via-purple-600 to-emerald-500 opacity-60"></div>
+                <input 
+                    type="range" 
+                    id="evolution-slider" 
+                    min="0" 
+                    max="100" 
+                    value="0" 
+                    class="w-full h-1 bg-transparent rounded-lg appearance-none cursor-pointer focus:outline-none z-10 relative"
+                >
+            </div>
+        </div>
+
+        <!-- 補足・操作説明 ＆ プリセットコントロール -->
+        <div class="flex flex-col md:flex-row justify-between items-center gap-5 pt-2 border-t border-white/5">
+            <div class="text-xs text-white/50 text-center md:text-left leading-relaxed max-w-xl">
+                <strong class="text-white/80"><i class="fa-solid fa-eye mr-1"></i>投影のメカニズム:</strong> 
+                心の震えを抑圧すると、他者はあなたを脅かす敵（赤黒い棘）となり、自分に向けられた「攻撃（冷たい視線・否定）」となって迫ります。<br>
+                震えを許容し解放すると、社会は調和（黄金の光）へと融和し、他者は「愛と優しさ（ハートと温もり）」を贈り合う存在へと変わります。
+            </div>
+            
+            <!-- クイック変容プリセット -->
+            <div class="flex gap-2">
+                <button id="preset-suppressed" class="px-3 py-1.5 rounded-full border border-red-500/20 text-[10px] md:text-xs text-red-400 bg-red-950/10 hover:bg-red-950/30 transition-all tracking-wider">
+                    他者は敵 (0%)
+                </button>
+                <button id="preset-neutral" class="px-3 py-1.5 rounded-full border border-purple-500/20 text-[10px] md:text-xs text-purple-400 bg-purple-950/10 hover:bg-purple-950/30 transition-all tracking-wider">
+                    葛藤と境界 (50%)
+                </button>
+                <button id="preset-liberated" class="px-3 py-1.5 rounded-full border border-emerald-500/20 text-[10px] md:text-xs text-emerald-400 bg-emerald-950/10 hover:bg-emerald-950/30 transition-all tracking-wider">
+                    社会は天国 (100%)
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM要素の取得
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        const slider = document.getElementById('evolution-slider');
+        const txtPercentage = document.getElementById('txt-percentage');
+        const soulCore = document.getElementById('soul-core');
+        const defenseBarrier = document.getElementById('defense-barrier');
+        const floatingEmotionsContainer = document.getElementById('floating-emotions-container');
+        const rippleLayer = document.getElementById('interactive-ripple-layer');
+
+        const worldStateTitle = document.getElementById('world-state-title');
+        const worldStateDesc = document.getElementById('world-state-desc');
+        const worldStateEn = document.getElementById('world-state-en');
+        const headerStatusDot = document.getElementById('header-status-dot');
+
+        // 背景グロー
+        const bgGlowShadowLeft = document.getElementById('bg-glow-shadow-left');
+        const bgGlowShadowRight = document.getElementById('bg-glow-shadow-right');
+        const bgGlowGiftGold = document.getElementById('bg-glow-gift-gold');
+        const bgGlowGiftRose = document.getElementById('bg-glow-gift-rose');
+        const bgGlowGiftEmerald = document.getElementById('bg-glow-gift-emerald');
+
+        // 音響コントロール
+        const btnAudioToggle = document.getElementById('btn-audio-toggle');
+        const audioIcon = document.getElementById('audio-icon');
+        const audioText = document.getElementById('audio-text');
+
+        // 状態変数（0: 社会が敵・他者の攻撃 〜 1: 社会が天国・他者の愛）
+        let state = 0; 
+        let targetState = 0;
+
+        // 音響システム変数 (Web Audio API)
+        let audioCtx = null;
+        let shadowSynth = null; 
+        let shadowFilter = null;
+        let giftSynthL = null;  
+        let giftSynthR = null;
+        let giftDelay = null;
+        let masterGainShadow = null;
+        let masterGainGift = null;
+        let isAudioEnabled = false;
+
+        // キャンバスサイズ設定
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // 音響エンジンの初期化・更新
+        function initAudio() {
+            if (audioCtx) return;
+            
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContextClass();
+
+            // --- シャドウの音：他者の不快な視線、突き刺さる言葉、金属的ノイズのうねり ---
+            shadowSynth = audioCtx.createOscillator();
+            shadowSynth.type = 'sawtooth';
+            shadowSynth.frequency.value = 58; // 不穏なD#1
+            
+            const shadowLFO = audioCtx.createOscillator();
+            shadowLFO.type = 'sine';
+            shadowLFO.frequency.value = 9; // 攻撃のピリピリとした揺れ
+            
+            const shadowLFOGain = audioCtx.createGain();
+            shadowLFOGain.gain.value = 18; 
+
+            shadowFilter = audioCtx.createBiquadFilter();
+            shadowFilter.type = 'peaking';
+            shadowFilter.Q.value = 8;
+            shadowFilter.frequency.value = 350;
+
+            shadowLFO.connect(shadowLFOGain);
+            shadowLFOGain.connect(shadowSynth.frequency);
+            shadowSynth.connect(shadowFilter);
+
+            // --- ギフトの音：他者から送られる温かい調和、祝福、愛の広がり ---
+            giftSynthL = audioCtx.createOscillator();
+            giftSynthL.type = 'sine';
+            giftSynthL.frequency.value = 293.66; // D4 (優しい根音)
+
+            giftSynthR = audioCtx.createOscillator();
+            giftSynthR.type = 'triangle';
+            giftSynthR.frequency.value = 440.00; // A4 (包み込む完全五度)
+
+            giftDelay = audioCtx.createDelay();
+            giftDelay.delayTime.value = 0.5;
+            const delayFeedback = audioCtx.createGain();
+            delayFeedback.gain.value = 0.35;
+
+            const giftFilter = audioCtx.createBiquadFilter();
+            giftFilter.type = 'lowpass';
+            giftFilter.frequency.value = 750;
+
+            giftSynthL.connect(giftFilter);
+            giftSynthR.connect(giftFilter);
+            giftFilter.connect(giftDelay);
+            giftDelay.connect(delayFeedback);
+            delayFeedback.connect(giftDelay); 
+
+            // マスターゲイン
+            masterGainShadow = audioCtx.createGain();
+            masterGainGift = audioCtx.createGain();
+            
+            masterGainShadow.gain.value = 0.12; 
+            masterGainGift.gain.value = 0.0;
+
+            shadowFilter.connect(masterGainShadow);
+            masterGainShadow.connect(audioCtx.destination);
+
+            giftFilter.connect(masterGainGift);
+            giftDelay.connect(masterGainGift);
+            masterGainGift.connect(audioCtx.destination);
+
+            // 起動
+            shadowLFO.start();
+            shadowSynth.start();
+            giftSynthL.start();
+            giftSynthR.start();
+        }
+
+        // 音響の動的更新
+        function updateAudioDynamics(currentState) {
+            if (!audioCtx || !isAudioEnabled) return;
+
+            // シャドウが優勢（0に近いほど金属的な突き刺さる音が目立つ）
+            const shadowIntensity = 1 - currentState;
+            masterGainShadow.gain.setTargetAtTime(shadowIntensity * 0.15, audioCtx.currentTime, 0.1);
+            if (shadowFilter) {
+                shadowFilter.frequency.setTargetAtTime(200 + (shadowIntensity * 600), audioCtx.currentTime, 0.2);
+            }
+
+            // ギフトが優勢（1に近いほど天国の安らぎ、祝福のアンビエントが広がる）
+            const giftIntensity = currentState;
+            masterGainGift.gain.setTargetAtTime(giftIntensity * 0.22, audioCtx.currentTime, 0.2);
+            if (giftSynthL && giftSynthR) {
+                const detune = (1 - giftIntensity) * 15; // 葛藤によるズレ
+                giftSynthL.frequency.setTargetAtTime(293.66 + detune, audioCtx.currentTime, 0.3);
+                giftSynthR.frequency.setTargetAtTime(440.00 - detune, audioCtx.currentTime, 0.3);
+            }
+        }
+
+        // 音響のON/OFF
+        btnAudioToggle.addEventListener('click', () => {
+            if (!isAudioEnabled) {
+                isAudioEnabled = true;
+                if (!audioCtx) {
+                    initAudio();
+                } else if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                audioIcon.className = "fa-solid fa-volume-high text-emerald-400";
+                audioText.innerText = "音響: ON";
+                audioText.className = "text-emerald-400";
+                playInteractSound(state);
+            } else {
+                isAudioEnabled = false;
+                if (audioCtx) {
+                    audioCtx.suspend();
+                }
+                audioIcon.className = "fa-solid fa-volume-xmark text-red-400";
+                audioText.innerText = "音響: OFF";
+                audioText.className = "text-white/80";
+            }
+        });
+
+        // 効果音（攻撃を受ける音、愛を受け取る音）
+        function playInteractSound(currentState) {
+            if (!audioCtx || !isAudioEnabled) return;
+
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (currentState < 0.5) {
+                // シャドウ：金属が突き刺さるようなピキーンという鋭い音
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.25);
+                gainNode.gain.setValueAtTime(0.18, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.25);
+            } else {
+                // ギフト：ハープやベルのように優しく包み込む「ポーン」という音
+                osc.type = 'sine';
+                const pitch = 587.33 * (0.8 + currentState * 0.4); // D5基準
+                osc.frequency.setValueAtTime(pitch, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(pitch * 0.5, audioCtx.currentTime + 0.7);
+                gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.7);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.7);
+            }
+        }
+
+        // --- 社会・他者オブジェクトの定義 ---
+        const othersCount = 6;
+        const others = [];
+        const particles = [];
+
+        // 周囲に浮かぶ「他者 / 社会の人々」を定義するクラス
+        class OtherEntity {
+            constructor(index) {
+                this.index = index;
+                this.baseAngle = (index * Math.PI * 2) / othersCount;
+                this.angle = this.baseAngle;
+                this.distance = 180; // 中心（自分）からの距離
+                this.x = 0;
+                this.y = 0;
+                this.size = 18;
+                this.pulseSpeed = 0.02 + index * 0.005;
+                this.pulseTimer = Math.random() * 100;
+                this.attackTimer = Math.random() * 60;
+                this.giftTimer = Math.random() * 90;
+            }
+
+            update(currentState, cx, cy) {
+                this.pulseTimer += this.pulseSpeed;
+                
+                // シャドウ時：不気味に前後にせわしなく揺れる
+                // ギフト時：優雅に円上をゆっくりと回遊する
+                if (currentState < 0.5) {
+                    const factor = (0.5 - currentState) * 2;
+                    this.angle = this.baseAngle + Math.sin(this.pulseTimer) * 0.15 * factor;
+                    this.distance = 180 - Math.sin(this.pulseTimer * 1.5) * 15 * factor; // 近寄って圧迫してくる
+                } else {
+                    const factor = (currentState - 0.5) * 2;
+                    this.angle = this.baseAngle + Date.now() * 0.0002; // ゆったり回転
+                    this.distance = 180 + Math.sin(this.pulseTimer * 0.5) * 20 * factor; // 程よい距離感
+                }
+
+                this.x = cx + Math.cos(this.angle) * this.distance;
+                this.y = cy + Math.sin(this.angle) * this.distance;
+
+                // --- 攻撃（シャドウ）や愛（ギフト）の波動の発射システム ---
+                if (currentState < 0.4) {
+                    // 攻撃：自己に向かって鋭い棘（ビーム）を撃ち込む
+                    this.attackTimer += (1 - currentState) * 1.5;
+                    if (this.attackTimer > 100) {
+                        spawnProjectile(this.x, this.y, cx, cy, 'attack');
+                        this.attackTimer = 0;
+                    }
+                } else if (currentState > 0.6) {
+                    // 愛の贈与：自己に向かって暖かなハートや光をゆっくり届ける
+                    this.giftTimer += currentState * 1.2;
+                    if (this.giftTimer > 120) {
+                        spawnProjectile(this.x, this.y, cx, cy, 'love');
+                        this.giftTimer = 0;
+                    }
+                }
+            }
+
+            draw(currentState) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+
+                // 現在の状態に合わせて他者のビジュアルを変容
+                if (currentState < 0.5) {
+                    // シャドウ：冷酷で攻撃的な「赤い棘の集合体」または「刺すような視線」
+                    const factor = (0.5 - currentState) * 2;
+                    const spikeCount = 6;
+                    const outerSize = this.size * (1 + Math.sin(this.pulseTimer * 3) * 0.25 * factor);
+
+                    ctx.strokeStyle = `rgba(239, 68, 68, ${0.4 + factor * 0.6})`;
+                    ctx.lineWidth = 1.8;
+                    
+                    // トゲトゲを描画
+                    ctx.beginPath();
+                    for (let i = 0; i < spikeCount * 2; i++) {
+                        const a = (i * Math.PI) / spikeCount;
+                        const r = i % 2 === 0 ? outerSize : outerSize * 0.4;
+                        ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+                    }
+                    ctx.closePath();
+                    ctx.fillStyle = `rgba(30, 10, 10, ${0.5 + factor * 0.5})`;
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // 鋭い瞳孔（自分をじっと監視する冷たい視線）
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ef4444';
+                    ctx.fill();
+
+                } else {
+                    // ギフト：温和に光り輝く「黄金・エメラルドの太陽」または「花」
+                    const factor = (currentState - 0.5) * 2;
+                    const scale = 1 + Math.sin(this.pulseTimer) * 0.15;
+                    
+                    // やわらかい光輪
+                    const grad = ctx.createRadialGradient(0, 0, 1, 0, 0, this.size * 1.8 * scale);
+                    grad.addColorStop(0, 'rgba(251, 191, 36, 0.8)'); // 黄金
+                    grad.addColorStop(0.5, 'rgba(244, 63, 94, 0.4)'); // マゼンタ
+                    grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 2 * scale, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // 中心の実体
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 6 * scale, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.shadowBlur = 12 * factor;
+                    ctx.shadowColor = '#fbbf24';
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        // 初期他者の生成
+        for (let i = 0; i < othersCount; i++) {
+            others.push(new OtherEntity(i));
+        }
+
+        // --- 飛び交うプロジェクタイル（攻撃の棘 vs 愛の温もり） ---
+        const projectiles = [];
+
+        function spawnProjectile(sx, sy, tx, ty, type) {
+            projectiles.push({
+                x: sx,
+                y: sy,
+                tx: tx,
+                ty: ty,
+                type: type,
+                progress: 0,
+                // シャドウ時は鋭く高速、ギフト時は優しくふわりと舞う
+                speed: type === 'attack' ? 0.035 : 0.015,
+                angle: Math.atan2(ty - sy, tx - sx),
+                size: type === 'attack' ? 8 : 12,
+                pulse: Math.random() * 10
+            });
+        }
+
+        // --- 浮かび上がる「他者・社会の言葉」 ---
+        const wordDictionary = [
+            // シャドウ（他者からの攻撃・冷たい社会）
+            { text: "他人は敵だ", type: "shadow", color: "text-red-600/40" },
+            { text: "冷たい視線", type: "shadow", color: "text-red-900/50" },
+            { text: "あいつのせい", type: "shadow", color: "text-red-500/40" },
+            { text: "期待外れ", type: "shadow", color: "text-purple-600/40" },
+            { text: "自己責任", type: "shadow", color: "text-slate-600/50" },
+            { text: "阻害", type: "shadow", color: "text-rose-950/50" },
+            { text: "孤立無援", type: "shadow", color: "text-slate-500/40" },
+            { text: "社会の闇", type: "shadow", color: "text-red-800/40" },
+            
+            // ギフト（他者からの愛・温かな社会）
+            { text: "そのままの君でいい", type: "gift", color: "text-amber-300/60 font-semibold" },
+            { text: "よくがんばったね", type: "gift", color: "text-emerald-400/60 font-semibold" },
+            { text: "愛をありがとう", type: "gift", color: "text-rose-400/70 font-bold" },
+            { text: "ここは安全な世界", type: "gift", color: "text-fuchsia-400/80 font-bold" },
+            { text: "響きあう心", type: "gift", color: "text-cyan-400/60 font-semibold" },
+            { text: "いつでも味方だよ", type: "gift", color: "text-orange-300/60" },
+            { text: "繋がっているよ", type: "gift", color: "text-teal-300/60" }
+        ];
+
+        // 感情ワードのフローティング発生
+        function spawnFloatingWord(text, colorClass) {
+            const w = canvas.clientWidth || 500;
+            const h = canvas.clientHeight || 500;
+            
+            const wordDiv = document.createElement('div');
+            wordDiv.innerText = text;
+            wordDiv.className = `absolute text-xs md:text-sm tracking-widest ${colorClass} transition-all duration-[4500ms] ease-out transform pointer-events-none select-none z-30`;
+            
+            // 他者（周囲）から自分（中心）へ向かって、または自分から外側へ向かって流れる
+            const angle = Math.random() * Math.PI * 2;
+            const startDist = state < 0.5 ? 240 : 50; 
+            const endDist = state < 0.5 ? 60 : 250; 
+
+            const startX = (w / 2) + Math.cos(angle) * startDist;
+            const startY = (h / 2) + Math.sin(angle) * startDist;
+            
+            wordDiv.style.left = `${startX}px`;
+            wordDiv.style.top = `${startY}px`;
+            wordDiv.style.opacity = '0';
+            wordDiv.style.transform = 'scale(0.8) translate(-50%, -50%)';
+
+            floatingEmotionsContainer.appendChild(wordDiv);
+
+            setTimeout(() => {
+                const endX = (w / 2) + Math.cos(angle) * endDist;
+                const endY = (h / 2) + Math.sin(angle) * endDist;
+                
+                wordDiv.style.left = `${endX}px`;
+                wordDiv.style.top = `${endY}px`;
+                wordDiv.style.opacity = '0.9';
+                wordDiv.style.transform = 'scale(1.2) translate(-50%, -50%)';
+            }, 50);
+
+            setTimeout(() => {
+                wordDiv.style.opacity = '0';
+                wordDiv.style.transform = 'scale(1.4) translate(-50%, -50%) blur(5px)';
+                setTimeout(() => wordDiv.remove(), 4500);
+            }, 2500);
+        }
+
+        let frameCounter = 0;
+        function handleFloatingWordsSpawning() {
+            frameCounter++;
+            if (frameCounter % 60 === 0) {
+                const activeType = state < 0.5 ? "shadow" : "gift";
+                const filtered = wordDictionary.filter(item => item.type === activeType);
+                const targetWord = filtered[Math.floor(Math.random() * filtered.length)];
+                
+                const spawnProbability = activeType === "shadow" ? (1 - state * 2) : ((state - 0.5) * 2);
+                if (Math.random() < (spawnProbability + 0.2)) {
+                    spawnFloatingWord(targetWord.text, targetWord.color);
+                }
+            }
+        }
+
+        // --- ひび割れた防壁（シャドウ） ＆ 調和の聖域（ギフト） のシード ---
+        const wallSegments = [];
+        function generateBarrierSeeds() {
+            wallSegments.length = 0;
+            const segmentCount = 12;
+            for (let i = 0; i < segmentCount; i++) {
+                const angle = (i * Math.PI * 2) / segmentCount;
+                wallSegments.push({
+                    angle: angle,
+                    shakeOffset: Math.random() * Math.PI
+                });
+            }
+        }
+        generateBarrierSeeds();
+
+        // 社会を隔てる冷たい壁の描画（シャドウ時）
+        function drawShadowWall(opacity) {
+            if (opacity <= 0.01) return;
+            const w = canvas.clientWidth || 500;
+            const h = canvas.clientHeight || 500;
+            const cx = w / 2;
+            const cy = w / 2;
+
+            ctx.save();
+            ctx.strokeStyle = `rgba(239, 68, 68, ${opacity * 0.75})`;
+            ctx.lineWidth = 2.5;
+            ctx.shadowBlur = 12 * opacity;
+            ctx.shadowColor = 'rgba(239, 68, 68, 0.8)';
+
+            // 防衛シールド上に尖ったトゲの壁を構築
+            ctx.beginPath();
+            const radius = 64; // 檻の半径
+            wallSegments.forEach((seg, idx) => {
+                const shake = Math.sin(Date.now() * 0.01 + seg.shakeOffset) * 4 * opacity;
+                const r = radius + shake;
+                const x1 = cx + Math.cos(seg.angle) * r;
+                const y1 = cy + Math.sin(seg.angle) * r;
+                
+                // 隣のセグメントとの接続
+                const nextSeg = wallSegments[(idx + 1) % wallSegments.length];
+                const x2 = cx + Math.cos(nextSeg.angle) * r;
+                const y2 = cy + Math.sin(nextSeg.angle) * r;
+
+                ctx.moveTo(x1, y1);
+                // 外側に向けて「鋭い拒絶のトゲ」
+                const midAngle = (seg.angle + nextSeg.angle) / 2;
+                const midX = cx + Math.cos(midAngle) * (r + 15 * opacity);
+                const midY = cy + Math.sin(midAngle) * (r + 15 * opacity);
+                
+                ctx.lineTo(midX, midY);
+                ctx.lineTo(x2, y2);
+            });
+            ctx.stroke();
+
+            // 壁と他者の間を走る不穏な赤い警戒レーザー（視線の束縛）
+            ctx.strokeStyle = `rgba(239, 68, 68, ${opacity * 0.15})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            others.forEach(oth => {
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(oth.x, oth.y);
+            });
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // 温かい社会の調和光環の描画（ギフト時）
+        function drawHeavenMandala(opacity) {
+            if (opacity <= 0.01) return;
+            const w = canvas.clientWidth || 500;
+            const h = canvas.clientHeight || 500;
+            const cx = w / 2;
+            const cy = h / 2;
+
+            ctx.save();
+            ctx.globalAlpha = opacity;
+            ctx.translate(cx, cy);
+            
+            // 天国の優雅な回転
+            const rotation = Date.now() * 0.0003;
+            ctx.rotate(rotation);
+
+            // 神聖幾何学：愛の幾何学的ひろがり
+            const rings = 3;
+            for (let r = 1; r <= rings; r++) {
+                const radius = r * 55 * opacity;
+                ctx.beginPath();
+                ctx.arc(0, 0, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = r % 2 === 0 ? 'rgba(251, 191, 36, 0.3)' : 'rgba(52, 211, 153, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                const petalCount = 8;
+                for (let i = 0; i < petalCount; i++) {
+                    const petalAngle = (i * Math.PI * 2) / petalCount;
+                    ctx.save();
+                    ctx.rotate(petalAngle);
+                    
+                    // ハートのような柔らかな調和花弁
+                    ctx.beginPath();
+                    ctx.ellipse(radius, 0, 18 * opacity, 10 * opacity, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(244, 63, 94, 0.05)';
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(251, 191, 36, 0.3)';
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                }
+            }
+
+            // 自己と他者を結ぶ温かな愛の光のレイヤー
+            ctx.beginPath();
+            others.forEach(oth => {
+                // 自己を中心として他者の位置までの美しい光のライン
+                const relativeAngle = Math.atan2(oth.y - cy, oth.x - cx) - rotation;
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(relativeAngle) * 180 * opacity, Math.sin(relativeAngle) * 180 * opacity);
+            });
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+            ctx.setLineDash([5, 8]);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // --- インタラクティブ波紋＆パーティクルシステム ---
+        const particlePool = [];
+        class AuraParticle {
+            constructor() {
+                this.reset(0, 0, 'none');
+            }
+
+            reset(x, y, type) {
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = Math.random() * 2 + 1;
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed;
+                this.alpha = 1.0;
+                this.decay = Math.random() * 0.02 + 0.015;
+                this.size = Math.random() * 3 + 1.5;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                if (this.type === 'shadow') {
+                    ctx.fillStyle = `rgba(239, 68, 68, ${this.alpha})`;
+                } else {
+                    ctx.fillStyle = `rgba(251, 191, 36, ${this.alpha})`;
+                }
+                ctx.fill();
+            }
+        }
+
+        function createSparkles(x, y, type) {
+            for (let i = 0; i < 8; i++) {
+                const p = particlePool.find(item => item.alpha <= 0) || new AuraParticle();
+                p.reset(x, y, type);
+                if (!particlePool.includes(p)) {
+                    particlePool.push(p);
+                }
+            }
+        }
+
+        // 波紋（Ripple）の発生（クリック/タッチ時）
+        function createRippleEffect(clientX, clientY) {
+            const containerRect = canvas.parentElement.getBoundingClientRect();
+            const clickX = clientX - containerRect.left;
+            const clickY = containerRect.top + containerRect.height / 2 - clientY; // canvas内位置補正
+
+            const ripple = document.createElement('div');
+            ripple.className = 'absolute rounded-full border pointer-events-none transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ease-out z-25';
+            ripple.style.left = `${clientX - containerRect.left}px`;
+            ripple.style.top = `${clientY - containerRect.top}px`;
+            ripple.style.width = '0px';
+            ripple.style.height = '0px';
+
+            if (state < 0.5) {
+                // シャドウ：固く守る拒絶の赤い波紋
+                ripple.style.borderColor = 'rgba(239, 68, 68, 0.8)';
+                ripple.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.6)';
+            } else {
+                // ギフト：愛を周囲に配る黄金・パステルの融合波紋
+                ripple.style.borderColor = 'rgba(52, 211, 153, 0.8)';
+                ripple.style.boxShadow = '0 0 30px rgba(251, 191, 36, 0.7)';
+            }
+
+            rippleLayer.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.style.width = '520px';
+                ripple.style.height = '520px';
+                ripple.style.opacity = '0';
+            }, 50);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 1050);
+
+            // インタラクティブ音
+            playInteractSound(state);
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            createRippleEffect(e.clientX, e.clientY);
+        });
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) {
+                createRippleEffect(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+
+        // --- アニメーション制御ループ ---
+        function animate() {
+            // スライダー値を目標に補間（イージング）
+            state += (targetState - state) * 0.06;
+
+            // キャンバスフェード（残像処理：シャドウ時は残響を濃く、ギフト時は軽やかにクリアに）
+            const clearAlpha = 0.15 + (1 - state) * 0.15; 
+            ctx.fillStyle = `rgba(3, 3, 6, ${clearAlpha})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // UIパーセンテージ
+            const percentInt = Math.round(state * 100);
+            txtPercentage.innerText = `${percentInt}% CONNECTION`;
+
+            const w = canvas.clientWidth || 500;
+            const h = canvas.clientHeight || 500;
+            const cx = w / 2;
+            const cy = h / 2;
+
+            // 1. 中央の「自分（自己コア）」の変容
+            // シャドウ時：周囲に怯え、小さく硬直してブルブル震える。檻（防衛バリア）が強く閉まる
+            // ギフト時：ゆったりと呼吸するように優しく脈打ち、広く光を放つ
+            const corePulse = 1.0 + (state * 1.5) + Math.sin(Date.now() * 0.005) * (0.1 + (1 - state) * 0.3);
+            const shakeX = (1 - state) * (Math.random() - 0.5) * 12;
+            const shakeY = (1 - state) * (Math.random() - 0.5) * 12;
+            
+            soulCore.style.transform = `translate(${shakeX}px, ${shakeY}px) scale(${corePulse})`;
+            
+            if (state > 0.7) {
+                soulCore.style.backgroundColor = '#ffffff';
+                soulCore.style.boxShadow = `0 0 ${20 + state * 35}px rgba(251, 191, 36, 0.9), 0 0 ${40 + state * 45}px rgba(244, 63, 94, 0.7)`;
+                soulCore.innerText = "愛";
+                soulCore.className = "w-12 h-12 rounded-full bg-white z-20 transition-all duration-300 flex items-center justify-center text-xs text-rose-500 font-black tracking-widest";
+            } else {
+                soulCore.style.backgroundColor = `rgb(255, ${Math.floor(state * 200)}, ${Math.floor(state * 200)})`;
+                soulCore.style.boxShadow = `0 0 15px rgba(23ef, 68, 68, 0.8), 0 0 4px rgba(147, 51, 234, 0.5)`;
+                soulCore.innerText = "自分";
+                soulCore.className = "w-12 h-12 rounded-full z-20 transition-all duration-300 flex items-center justify-center text-[10px] text-red-950 font-bold tracking-wider";
+            }
+
+            // 2. 防衛シールドの変容
+            // シャドウ時は自分を守るために固い殻（1.0倍）をまとい、解放されるにつれて消滅する
+            const barrierScale = 1.0 + (state * 3.5);
+            const barrierOpacity = Math.max(0, 1.0 - state * 1.3);
+            defenseBarrier.style.transform = `scale(${barrierScale}) rotate(${Date.now() * 0.03}deg)`;
+            defenseBarrier.style.opacity = barrierOpacity;
+            defenseBarrier.style.borderColor = `rgba(239, 68, 68, ${0.6 * (1 - state)})`;
+
+            // 3. 背景グラデーション・グロー
+            bgGlowShadowLeft.style.opacity = Math.max(0, 1.0 - state * 1.4);
+            bgGlowShadowRight.style.opacity = Math.max(0, 1.0 - state * 1.2);
+            bgGlowGiftGold.style.opacity = Math.max(0, (state - 0.2) * 1.3);
+            bgGlowGiftRose.style.opacity = Math.max(0, (state - 0.4) * 1.5);
+            bgGlowGiftEmerald.style.opacity = Math.max(0, (state - 0.6) * 1.6);
+
+            // 4. メッセージテキスト更新
+            updateTextDescriptions(state);
+
+            // 5. キャンバス上への社会構造の描画
+            const shadowWeight = Math.max(0, 1.0 - state * 1.3);
+            const giftWeight = Math.max(0, (state - 0.3) * 1.4);
+            drawShadowWall(shadowWeight);
+            drawHeavenMandala(giftWeight);
+
+            // 6. 他者（他者Entity）の更新と描画
+            others.forEach(oth => {
+                oth.update(state, cx, cy);
+                oth.draw(state);
+            });
+
+            // 7. 飛び交うエネルギー（攻撃 vs 愛）の物理演算・描画
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                const proj = projectiles[i];
+                proj.progress += proj.speed;
+
+                if (proj.progress >= 1.0) {
+                    // 中心（自分）または他者に到達したときのインパクト
+                    if (proj.type === 'attack') {
+                        // 攻撃が自分（防衛シールド）に突き刺さり、赤い火花が散る
+                        createSparkles(proj.tx + (Math.random() - 0.5) * 10, proj.ty + (Math.random() - 0.5) * 10, 'shadow');
+                        if (isAudioEnabled && Math.random() < 0.25) {
+                            // 低い嫌な衝撃音を微かに鳴らす
+                            const shock = audioCtx.createOscillator();
+                            const sg = audioCtx.createGain();
+                            shock.frequency.value = 90;
+                            sg.gain.value = 0.04;
+                            shock.connect(sg).connect(audioCtx.destination);
+                            shock.start();
+                            shock.stop(audioCtx.currentTime + 0.1);
+                        }
+                    } else {
+                        // 愛の温もりが届き、黄金の祝福スパークルが舞う
+                        createSparkles(proj.tx, proj.ty, 'gift');
+                    }
+                    projectiles.splice(i, 1);
+                    continue;
+                }
+
+                // 現在の位置
+                const curX = proj.x + (proj.tx - proj.x) * proj.progress;
+                const curY = proj.y + (proj.ty - proj.y) * proj.progress;
+
+                // 描画
+                ctx.save();
+                ctx.translate(curX, curY);
+                ctx.rotate(proj.angle);
+
+                if (proj.type === 'attack') {
+                    // 攻撃の棘：赤く鋭角な矢印・トゲ
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(-proj.size, 0);
+                    ctx.lineTo(0, proj.size * 0.4);
+                    ctx.lineTo(0, -proj.size * 0.4);
+                    ctx.closePath();
+                    ctx.fillStyle = '#b91c1c';
+                    ctx.fill();
+                    ctx.stroke();
+                } else {
+                    // 愛のハート：優しく輝くピンクとゴールドのハートマーク
+                    ctx.fillStyle = 'rgba(244, 63, 94, 0.95)';
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#fbbf24';
+                    
+                    // 簡易ハート描画
+                    ctx.beginPath();
+                    const size = proj.size;
+                    ctx.moveTo(0, size / 4);
+                    ctx.quadraticCurveTo(size / 2, size / 2, size, 0);
+                    ctx.quadraticCurveTo(size, -size / 2, size / 2, -size / 2);
+                    ctx.quadraticCurveTo(0, -size / 2, 0, -size / 4);
+                    ctx.quadraticCurveTo(0, -size / 2, -size / 2, -size / 2);
+                    ctx.quadraticCurveTo(-size, -size / 2, -size, 0);
+                    ctx.quadraticCurveTo(-size / 2, size / 2, 0, size / 4);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            // パーティクル（スパークル）の処理
+            particlePool.forEach(p => {
+                if (p.alpha > 0) {
+                    p.update();
+                    p.draw();
+                }
+            });
+
+            // 8. 感情フローティングワード
+            handleFloatingWordsSpawning();
+
+            // 9. 音響ダイナミクス更新
+            updateAudioDynamics(state);
+
+            requestAnimationFrame(animate);
+        }
+
+        // 状況に合わせたテキスト・解説のアップデート
+        function updateTextDescriptions(currentState) {
+            if (currentState < 0.2) {
+                worldStateTitle.innerText = "敵対する社会：牙を剥く他者";
+                worldStateTitle.className = "text-xl md:text-3xl font-semibold tracking-[0.2em] text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.3)] transition-all duration-300";
+                worldStateDesc.innerText = "震えを抑え込み、自分を『不都合なもの』として防衛するとき、社会は脅威（敵）を映し出す冷たい鏡となります。他者は牙を剥いてあなたを監視し、言葉の矢が降り注ぎます。";
+                worldStateEn.innerText = "HOSTILE MIRROR: THE WORLD ATTACKING YOUR FEAR";
+                headerStatusDot.className = "inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse";
+            } else if (currentState >= 0.2 && currentState < 0.5) {
+                worldStateTitle.innerText = "隔離された檻：孤立と不信の境界線";
+                worldStateTitle.className = "text-xl md:text-3xl font-light tracking-[0.2em] text-purple-400 transition-all duration-300";
+                worldStateDesc.innerText = "他者を信じられず、心の防衛シールドを頑強に張ることで孤立が深まります。棘（攻撃）はシールドに当たって火花を散らし、被害妄想と緊張が空間を支配します。";
+                worldStateEn.innerText = "BARRIER OF DISTRUST: LONELY DEFENSE";
+                headerStatusDot.className = "inline-block w-2.5 h-2.5 rounded-full bg-purple-500";
+            } else if (currentState >= 0.5 && currentState < 0.8) {
+                worldStateTitle.innerText = "信頼の雪解け：他者が差し伸べる優しさ";
+                worldStateTitle.className = "text-xl md:text-3xl font-light tracking-[0.2em] text-emerald-400 transition-all duration-300";
+                worldStateDesc.innerText = "心の防衛をゆるめ、自らの震えを『ギフト』として認め解放するとき、他者は攻撃を止め、調和の花（お互いの繋がり）が咲き始めます。暖かな光が自己に向けて届きます。";
+                worldStateEn.innerText = "DISSOLVING THE WALL: REVEALING THE KINDNESS OF OTHERS";
+                headerStatusDot.className = "inline-block w-2.5 h-2.5 rounded-full bg-emerald-400";
+            } else {
+                worldStateTitle.innerText = "愛が巡る天国：相互理解と祝福の楽園";
+                worldStateTitle.className = "text-xl md:text-3xl font-bold tracking-[0.25em] text-amber-200 drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] transition-all duration-300";
+                worldStateDesc.innerText = "完全なる信頼。あなたの震えは社会を彩る尊い個性（ギフト）として受容され、他者は温和な存在となってハート（愛・祝福・肯定）を絶え間なくあなたに贈り届けてくれます。";
+                worldStateEn.innerText = "SOCIETY AS HEAVEN: UNIFIED LOVE AND BLISSFUL GRATITUDE";
+                headerStatusDot.className = "inline-block w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping";
+            }
+        }
+
+        // --- インターフェースイベント ---
+        slider.addEventListener('input', (e) => {
+            targetState = e.target.value / 100;
+        });
+
+        document.getElementById('quick-shadow').addEventListener('click', () => {
+            targetState = 0;
+            slider.value = 0;
+            playInteractSound(0);
+        });
+
+        document.getElementById('quick-gift').addEventListener('click', () => {
+            targetState = 1.0;
+            slider.value = 100;
+            playInteractSound(1.0);
+        });
+
+        document.getElementById('preset-suppressed').addEventListener('click', () => {
+            targetState = 0;
+            slider.value = 0;
+            playInteractSound(0);
+        });
+        document.getElementById('preset-neutral').addEventListener('click', () => {
+            targetState = 0.5;
+            slider.value = 50;
+            playInteractSound(0.5);
+        });
+        document.getElementById('preset-liberated').addEventListener('click', () => {
+            targetState = 1.0;
+            slider.value = 100;
+            playInteractSound(1.0);
+        });
+
+        // アニメーションループ起動
+        window.onload = function () {
+            animate();
+        };
+    </script>
+</body>
+</html>
