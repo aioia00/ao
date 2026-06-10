@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>闇とギフトの正体 - 特設体験サイト</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Noto Sans JP & Playfair Display -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .fade-in {
+      animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .scale-in {
+      animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    /* スクロールバーの非表示 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-[#0a0c1a] via-[#111430] to-[#05060d] text-slate-100 antialiased flex flex-col selection:bg-amber-500/30 selection:text-amber-200">
+
+  <!-- ==========================================
+      ヘッダー / ナビゲーション
+  ========================================== -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-[#0a0c1a]/80 border-b border-indigo-950/60 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      
+      <!-- タイトル & キャッチコピー -->
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-gradient-to-br from-amber-400 to-indigo-600 rounded-xl shadow-lg">
+          <!-- キラキラアイコン (SVG) -->
+          <svg class="w-5 h-5 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-200 to-indigo-200">
+            闇とギフトの正体
+          </h1>
+          <p class="text-xs text-indigo-300">閉じ込めた「わたし」を迎えにいく心の錬金術</p>
+        </div>
+      </div>
+
+      <!-- ナビゲーションタブ -->
+      <nav class="flex items-center bg-indigo-950/40 border border-indigo-900/40 p-1 rounded-xl w-full sm:w-auto overflow-x-auto gap-1">
+        <button id="tab-btn-story" onclick="switchTab('story')" class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          <span>デジタル絵本</span>
+        </button>
+        <button id="tab-btn-alchemy" onclick="switchTab('alchemy')" class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 text-indigo-200 hover:bg-indigo-900/30">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+          <span>シャドウ図鑑</span>
+        </button>
+        <button id="tab-btn-diagnostic" onclick="switchTab('diagnostic')" class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 text-indigo-200 hover:bg-indigo-900/30">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          <span>心の声診断</span>
+        </button>
+        <button id="tab-btn-journal" onclick="switchTab('journal')" class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 text-indigo-200 hover:bg-indigo-900/30">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+          <span>解放のワーク</span>
+        </button>
+      </nav>
+
+      <!-- 音声コントロール -->
+      <div class="flex items-center gap-3 shrink-0">
+        <button id="sound-toggle-btn" onclick="toggleSound()" class="p-2 rounded-lg border text-xs flex items-center gap-1.5 transition-all bg-transparent text-slate-400 border-indigo-950 hover:text-slate-200" title="ヒーリングベル音声をON/OFF">
+          <span id="sound-icon-off">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+          </span>
+          <span id="sound-icon-on" class="hidden">
+            <svg class="w-4 h-4 text-amber-300 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+          </span>
+          <span id="sound-text" class="hidden md:inline">音 OFF</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==========================================
+      メインコンテンツエリア
+  ========================================== -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:py-8 flex flex-col justify-center">
+
+    <!-- ------------------------------------------
+        タブ1：デジタル絵本 (ストーリー)
+    ------------------------------------------ -->
+    <div id="tab-panel-story" class="space-y-6 fade-in">
+      
+      <!-- スライド表示エリア -->
+      <div class="relative bg-[#10132b] rounded-2xl border border-indigo-900/50 overflow-hidden shadow-2xl shadow-indigo-950/50">
+        
+        <!-- 装飾的な夜空の星屑（背景） -->
+        <div class="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] z-0"></div>
+        
+        <!-- メインスライドコンテンツ（グリッドレイアウト） -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 min-h-[420px] relative z-10">
+          
+          <!-- 左半分 / 上半分: 画像表示エリア -->
+          <div class="lg:col-span-7 bg-[#0b0c16] flex items-center justify-center relative p-2 min-h-[260px] lg:min-h-[480px]">
+            
+            <!-- 初期状態では src を空に、hiddenにして、エラーハンドラー読み込み完了後にJS側でロード開始 -->
+            <img 
+              id="slide-img"
+              alt="闇とギフトの正体"
+              class="w-full h-full max-h-[460px] object-contain rounded-lg transition-all duration-700 ease-in-out hidden"
+              onerror="handleImageError(this)"
+            />
+
+            <!-- 画像がない・読み込めない時の美しいフォールバック -->
+            <div id="slide-placeholder" class="hidden absolute inset-0 flex flex-col items-center justify-center p-8 bg-gradient-to-b from-[#141836] to-[#0c0e22] text-center">
+              <div class="w-16 h-16 rounded-full bg-indigo-900/50 flex items-center justify-center mb-4 text-amber-300">
+                <svg class="w-8 h-8 animate-spin" style="animation-duration: 6s;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+              </div>
+              <p id="placeholder-title" class="text-sm font-semibold text-amber-200 tracking-wider mb-2">闇とギフトの正体</p>
+              <p id="placeholder-subtitle" class="text-xs text-indigo-300 max-w-md">閉じ込めた「わたし」を迎えにいく旅</p>
+              <span id="placeholder-filename" class="text-[10px] text-slate-500 mt-4">[イメージ：Gifts_of_the_Shadow_p01.jpg]</span>
+            </div>
+
+            <!-- ページ番号インジケータ -->
+            <div id="slide-page-indicator" class="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-amber-200 text-xs px-3 py-1 rounded-full border border-indigo-900/30 font-mono z-20">
+              1 / 9
+            </div>
+          </div>
+
+          <!-- 右半分 / 下半分: テキスト & ナビゲーション解説エリア -->
+          <div class="lg:col-span-5 p-6 md:p-8 flex flex-col justify-between bg-gradient-to-br from-[#121634] to-[#090b1c] border-t lg:border-t-0 lg:border-l border-indigo-900/40">
+            <div class="space-y-4 my-auto">
+              
+              <!-- ミニアイコンとカテゴリ -->
+              <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wider bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                <svg class="w-3 h-3 text-amber-400 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+                <span id="story-phase-label">STORY PHASE 1</span>
+              </div>
+
+              <!-- タイトル -->
+              <div class="space-y-1.5">
+                <h2 id="story-title" class="text-xl md:text-2xl font-bold text-slate-100 tracking-wide leading-tight">
+                  闇とギフトの正体
+                </h2>
+                <p id="story-subtitle" class="text-xs md:text-sm font-medium text-amber-300/90 tracking-wide border-b border-indigo-900/30 pb-3">
+                  閉じ込めた「わたし」を迎えにいく旅
+                </p>
+              </div>
+
+              <!-- 説明文 -->
+              <p id="story-desc" class="text-slate-300 text-xs md:text-sm leading-relaxed tracking-wider font-light whitespace-pre-line py-2">
+                私たちは長い間、「闇」を悪いもの、克服すべきものとして扱ってきました。しかし、その扉を開く鍵は、すでにあなたの手の中にあります。
+              </p>
+            </div>
+
+            <!-- ナビゲーションコントロール -->
+            <div class="pt-6 border-t border-indigo-900/30 mt-6 flex items-center justify-between">
+              <button
+                id="story-prev-btn"
+                onclick="prevSlide()"
+                disabled
+                class="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-600 cursor-not-allowed"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+                戻る
+              </button>
+
+              <!-- ドットインジケータ -->
+              <div id="story-dots" class="flex gap-1">
+                <!-- JSで動的に構築 -->
+              </div>
+
+              <button
+                id="story-next-btn"
+                onclick="nextSlide()"
+                class="flex items-center gap-1 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-semibold rounded-xl text-xs hover:shadow-lg hover:shadow-amber-500/20 active:scale-95 transition-all"
+              >
+                <span>進む</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ボトムお役立ち・引用 -->
+      <div class="bg-[#12142d]/40 backdrop-blur-sm border border-indigo-950/60 p-4 rounded-xl flex items-start gap-3">
+        <svg class="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p class="text-xs text-indigo-200 leading-relaxed">
+          <strong class="text-amber-300">キーボード操作対応：</strong> パソコンで閲覧されている方は、キーボードの <kbd class="px-1.5 py-0.5 bg-indigo-900/60 rounded text-slate-300 text-[10px]">←</kbd> <kbd class="px-1.5 py-0.5 bg-indigo-900/60 rounded text-slate-300 text-[10px]">→</kbd> 矢印キーを押すことで、直感的にストーリースライドを進めたり戻したりできます。
+        </p>
+      </div>
+
+    </div>
+
+    <!-- ------------------------------------------
+        タブ2：シャドウ・アルケミー (インタラクティブ図鑑)
+    ------------------------------------------ -->
+    <div id="tab-panel-alchemy" class="space-y-8 fade-in hidden">
+      
+      <div class="text-center max-w-2xl mx-auto space-y-2">
+        <h2 class="text-xl md:text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-indigo-100">
+          シャドウ・アルケミー
+        </h2>
+        <p class="text-xs md:text-sm text-indigo-300 leading-relaxed">
+          抑圧されたエネルギーをほどくと、何が起こるのでしょうか？<br />
+          心に閉じ込めた「影」をタップして、それが輝く「ギフト（才能）」へ姿を変える様子を体感しましょう。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- 左側：シャドウの一覧リスト -->
+        <div id="alchemy-shadow-list" class="lg:col-span-5 grid grid-cols-2 lg:grid-cols-1 gap-2.5">
+          <!-- JSで動的に挿入されます -->
+        </div>
+
+        <!-- 右側：アルケミー変換デモンストレーター -->
+        <div class="lg:col-span-7 bg-[#111432]/60 backdrop-blur-md border border-indigo-900/50 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden min-h-[460px] flex flex-col justify-between">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div id="alchemy-detail-card" class="space-y-6 relative z-10">
+            <!-- JSで動的に詳細がレンダリングされます -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ------------------------------------------
+        タブ3：心の声診断 (シャドウチェック)
+    ------------------------------------------ -->
+    <div id="tab-panel-diagnostic" class="space-y-6 max-w-3xl mx-auto fade-in hidden">
+      
+      <div class="text-center space-y-2">
+        <h2 class="text-xl md:text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-indigo-100">
+          心の声・シャドウチェック
+        </h2>
+        <p class="text-xs md:text-sm text-indigo-300 leading-relaxed max-w-xl mx-auto">
+          知らず知らずのうちに、心の奥底（地下室）に押し込めてしまったエネルギーを診断してみましょう。
+          以下の「心のつぶやきやサイン」で、思い当たるものをチェックしてください。
+        </p>
+      </div>
+
+      <!-- 診断入力画面 -->
+      <div id="diagnostic-input-panel" class="bg-[#111432]/60 backdrop-blur-md border border-indigo-900/50 rounded-2xl p-5 md:p-8 shadow-xl space-y-6">
+        <div id="diagnostic-questions-container" class="space-y-4">
+          <!-- JSで動的に質問を構築 -->
+        </div>
+
+        <div class="pt-4 flex justify-center">
+          <button
+            onclick="calculateDiagnosticResult()"
+            class="flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold rounded-2xl text-sm transition-all shadow-lg hover:shadow-amber-500/20 active:scale-95"
+          >
+            <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+            <span>地下室の声を聴く（診断結果を見る）</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 診断結果表示画面 (初期状態は非表示) -->
+      <div id="diagnostic-result-panel" class="hidden bg-[#111432]/80 backdrop-blur-md border border-indigo-500/40 rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden scale-in space-y-6">
+        <!-- JSで結果を埋め込みます -->
+      </div>
+
+    </div>
+
+    <!-- ------------------------------------------
+        タブ4：解放のワーク (マインドジャーナル)
+    ------------------------------------------ -->
+    <div id="tab-panel-journal" class="max-w-2xl mx-auto space-y-6 fade-in hidden">
+      
+      <div class="text-center space-y-2">
+        <h2 class="text-xl md:text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-indigo-100">
+          感情を認める「解放のノート」
+        </h2>
+        <p class="text-xs md:text-sm text-indigo-300 leading-relaxed max-w-lg mx-auto">
+          「解放」とは、衝動のままに行動することではありません。<br />
+          心の中で「そう感じていたんだね」と、ありのままを認め、許すこと。
+          心の地下室に置いたままの想いを書き出し、光へと還しましょう。
+        </p>
+      </div>
+
+      <div class="bg-[#111432]/60 backdrop-blur-md border border-indigo-900/50 rounded-2xl p-6 md:p-8 shadow-xl relative min-h-[420px] flex flex-col justify-between overflow-hidden">
+        <!-- 背景ビジュアル（動的に輝く光のオーラ） -->
+        <div id="journal-glow-bg" class="absolute inset-0 bg-transparent transition-all duration-1000 pointer-events-none z-0"></div>
+
+        <!-- ワークステップ領域 -->
+        <div id="journal-step-container" class="relative z-10 flex-1 flex flex-col justify-between">
+          <!-- JSでステップ0、1、2を構築 -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==========================================
+      フッター
+  ========================================== -->
+  <footer class="border-t border-indigo-950/60 bg-[#060710]/90 py-8 px-4 text-center space-y-4">
+    <div class="max-w-2xl mx-auto space-y-2">
+      <p class="text-xs text-indigo-400/80 tracking-wider">
+        闇とは敵ではない。闇とは、まだ迎えに行っていない自分自身なのである。
+      </p>
+      <div class="flex items-center justify-center gap-1.5 text-xs text-slate-500">
+        <span>© 2026 「闇とギフトの正体」特設サイト</span>
+        <span>•</span>
+        <span>Created with Heart & Code</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+      アプリケーション・ロジック (JavaScript)
+  ========================================== -->
+  <script>
+    // ==========================================
+    // 1. 静的データ定義
+    // ==========================================
+    const SHADOW_DATA = [
+      {
+        id: "anger",
+        name: "怒り",
+        description: "「怒ってはいけない」と抑圧されがちなエネルギー。理不尽な状況や境界線を侵害されたときに生じる強い反応。",
+        shadowEmoji: "👹",
+        color: "from-red-600 to-amber-500",
+        shadowColor: "text-red-400 bg-red-950/40 border-red-800/50",
+        giftColor: "text-amber-300 bg-amber-950/40 border-amber-800/50",
+        glow: "shadow-[0_0_25px_rgba(239,68,68,0.25)]",
+        deepNeed: "境界線を守る力",
+        giftTitle: "意志",
+        giftDesc: "自分を守り、ノーと言う勇気。大切なものを守り抜く、力強く真っ直ぐな行動力とリーダーシップ。",
+        iconSvg: `<svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`,
+        phrase: "怒りは、私の尊厳を守るための境界線のサインであり、立ち上がるための『意志』となる。"
+      },
+      {
+        id: "jealousy",
+        name: "嫉妬",
+        description: "他者の輝きを見て「自分はダメだ」「ずるい」と葛藤するエネルギー。抑圧されると他者批判や焦りへと変わります。",
+        shadowEmoji: "👁️‍🗨️",
+        color: "from-emerald-600 to-teal-400",
+        shadowColor: "text-emerald-400 bg-emerald-950/40 border-emerald-800/50",
+        giftColor: "text-teal-300 bg-teal-950/40 border-teal-800/50",
+        glow: "shadow-[0_0_25px_rgba(16,185,129,0.25)]",
+        deepNeed: "本当に望んでいるもの",
+        giftTitle: "ビジョン",
+        giftDesc: "嫉妬する相手は、あなたが「本当に望んでいる未来」の鏡。自分の情熱の方向性を教えてくれる北極星。",
+        iconSvg: `<svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 4L9 7"/></svg>`,
+        phrase: "嫉妬は、私が本当に生きたい命の形を映し出す、未来への『ビジョン』となる。"
+      },
+      {
+        id: "desire",
+        name: "欲望・性的エネルギー",
+        description: "「わがままであってはいけない」「性的であってはいけない」と蓋をされやすい、本能的で強力な欲求の力。",
+        shadowEmoji: "🔥",
+        color: "from-purple-600 to-pink-500",
+        shadowColor: "text-purple-400 bg-purple-950/40 border-purple-800/50",
+        giftColor: "text-pink-300 bg-pink-950/40 border-pink-800/50",
+        glow: "shadow-[0_0_25px_rgba(168,85,247,0.25)]",
+        deepNeed: "純粋な創造性や生命力",
+        giftTitle: "創造性・生命力",
+        giftDesc: "何かを生み出し、情熱的に生を謳歌する原動力。世界に新しいインスピレーションをもたらす情熱そのもの。",
+        iconSvg: `<svg class="w-5 h-5 text-pink-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`,
+        phrase: "欲望と性的エネルギーは、私の内なる宇宙を開花させる、無限の『創造性・生命力』となる。"
+      },
+      {
+        id: "fear",
+        name: "恐れ",
+        description: "失敗、拒絶、未知に対する強い不安や焦り。克服すべき敵として最も毛嫌いされやすい、震えるエネルギー。",
+        shadowEmoji: "🌪️",
+        color: "from-indigo-600 to-blue-400",
+        shadowColor: "text-indigo-400 bg-indigo-950/40 border-indigo-800/50",
+        giftColor: "text-blue-300 bg-blue-950/40 border-blue-800/50",
+        glow: "shadow-[0_0_25px_rgba(79,70,229,0.25)]",
+        deepNeed: "大切にしたいものがあるという事実",
+        giftTitle: "守る力",
+        giftDesc: "物事を深く慎重に見極める力。リスクを察知し、自分や仲間、大切な未来を丁寧にはぐくみ『守る力』。",
+        iconSvg: `<svg class="w-5 h-5 text-blue-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`,
+        phrase: "恐れは、失いたくないほど尊いものがある証であり、確実にはぐくみ進む『守る力』となる。"
+      },
+      {
+        id: "sadness",
+        name: "悲しみ・感受性",
+        description: "「泣いてはいけない」「弱くてはいけない」と抑え込まれた、涙や胸の痛み。繊細すぎて傷つくのを避けるために凍らせた感覚。",
+        shadowEmoji: "💧",
+        color: "from-sky-600 to-cyan-400",
+        shadowColor: "text-sky-400 bg-sky-950/40 border-sky-800/50",
+        giftColor: "text-cyan-300 bg-cyan-950/40 border-cyan-800/50",
+        glow: "shadow-[0_0_25px_rgba(14,165,233,0.25)]",
+        deepNeed: "世界と繋がること",
+        giftTitle: "共感力",
+        giftDesc: "他者の痛みや喜びを自分のことのように感じ取る器。他者の心をそっと包み込み、癒やしをもたらす無条件の愛。",
+        iconSvg: `<svg class="w-5 h-5 text-cyan-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>`,
+        phrase: "悲しみと豊かな感受性は、他者の魂と深く通じ合い寄り添う、奇跡のような『共感力』となる。"
+      },
+      {
+        id: "solitude",
+        name: "孤独",
+        description: "逆境や寂しさから内側へ内側へと閉じていく、冷たく静かなエネルギー。誰とも繋がれない寂しさを覚える状態。",
+        shadowEmoji: "💎",
+        color: "from-slate-600 to-blue-300",
+        shadowColor: "text-slate-400 bg-slate-950/40 border-slate-800/50",
+        giftColor: "text-blue-200 bg-blue-950/40 border-blue-800/50",
+        glow: "shadow-[0_0_25px_rgba(71,85,105,0.25)]",
+        deepNeed: "真実への渇望",
+        giftTitle: "探求力",
+        giftDesc: "一人の時間を恐れず、本質を掘り下げる力。ノイズから離れ、人生の真実や深遠な智慧を見つけ出すための聖なる沈黙。",
+        iconSvg: `<svg class="w-5 h-5 text-blue-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>`,
+        phrase: "孤独は、外側の雑音から離れて内なる真実を深く掘り下げる、聖なる『探求力』となる。"
+      }
+    ];
+
+    const DIAGNOSTIC_QUESTIONS = [
+      {
+        id: "q1",
+        text: "つい、他人の楽しそうなSNSや成功している姿を見ると、ザワザワしたり「どうせ自分なんか…」と思ったりする？",
+        shadowId: "jealousy"
+      },
+      {
+        id: "q2",
+        text: "理不尽なことや、自分のやり方を邪魔されたとき、カッと頭に血が上りそうになるのを「大人の対応をせねば」と無理やり抑えている？",
+        shadowId: "anger"
+      },
+      {
+        id: "q3",
+        text: "新しいことに挑戦しようとするとき、極度のプレッシャーや「失敗したらどうしよう」という不安で体がすくみそうになる？",
+        shadowId: "fear"
+      },
+      {
+        id: "q4",
+        text: "「泣くのは弱い証拠」「感情的になって周囲に迷惑をかけてはいけない」と、つらい時でも涙をグッとこらえがち？",
+        shadowId: "sadness"
+      },
+      {
+        id: "q5",
+        text: "大勢の人と一緒にいても、なぜか自分だけが浮いているような、誰にも理解されないような冷たい寂しさを覚えることがある？",
+        shadowId: "solitude"
+      },
+      {
+        id: "q6",
+        text: "「もっとわがままになりたい」「自分を思いっきりアピールしたい」という強い衝動があるが、はしたない、恥ずかしいと押し殺している？",
+        shadowId: "desire"
+      }
+    ];
+
+    const SLIDES = [
+      {
+        img: "Gifts_of_the_Shadow_p01.jpg",
+        title: "闇とギフトの正体",
+        subtitle: "閉じ込めた「わたし」を迎えにいく旅",
+        desc: "私たちは長い間、「闇」を悪いもの、克服すべきものとして扱ってきました。しかし、その扉を開く鍵は、すでにあなたの手の中にあります。"
+      },
+      {
+        img: "Gifts_of_the_Shadow_p02.jpg",
+        title: "「闇」は、本当に悪いもの？",
+        subtitle: "抑圧されてきた心のかけらたち",
+        desc: "長い間、怒り、嫉妬、欲望、悲しみ、恐れ、性衝動などは「悪いもの」「浄化すべきもの」として扱われてきました。しかし、本当にそうなのでしょうか？"
+      },
+      {
+        img: "Gifts_of_the_Shadow_p03.jpg",
+        title: "観念が自分を地下室へ閉じ込める",
+        subtitle: "成長の過程で取り込んだ禁止令",
+        desc: "「怒ってはいけない」「泣いてはいけない」「目立ってはいけない」…私たちは成長の中でそんな観念を取り込み、本来の自分の一部（エネルギー）を心の地下室に閉じ込めます。"
+      },
+      {
+        img: "Gifts_of_the_Shadow_p04.jpg",
+        title: "押し込めたものは、決して消えない",
+        subtitle: "バネのように圧縮されるエネルギー",
+        desc: "押し込められたエネルギーは消滅しません。まるで圧力をかけられた頑丈なバネのように、見えなくなっただけで、いつでも弾け飛ぶ機会を狙いながら内側で渦巻いています。"
+      },
+      {
+        img: "Gifts_of_the_Shadow_p05.jpg",
+        title: "外側の問題は、内側の「反射」",
+        subtitle: "目の前の現実に投影されるシャドウ",
+        desc: "気になる他人、嫌いな人、繰り返す人間関係の悩み、社会への不満、突然湧き起こる焦り。外側に見えている多くの葛藤は、実は内側で抑圧されたシャドウの反射なのです。"
+      },
+      {
+        img: "Gifts_of_the_Shadow_p06.jpg",
+        title: "なぜ、何度も同じことが繰り返されるのか？",
+        subtitle: "罰ではなく、存在を知らせる「サイン」",
+        desc: "同じ葛藤が巡り巡る。それは罰ではなく、閉じ込められたエネルギーが意識に戻ろうとして「ここにいるよ、見つけて」と健気にノックし、存在を知らせているだけなのです。"
+      },
+      {
+        img: "Gifts_of_the_Shadow_p07.jpg",
+        title: "シャドウの正体は「未使用の生命力」",
+        subtitle: "レンズを通して見る、才能の裏面",
+        desc: "シャドウは悪ではありません。悪者扱いしていたものの奥には、まだ使われていないピュアな生命力が眠っています。それはまさに、あなたの才能の裏面なのです。"
+      },
+      {
+        img: "Gifts_of_the_Shadow_p08.jpg",
+        title: "闇は、才能（ギフト）に姿を変える",
+        subtitle: "抑圧を解くことで流れるアルケミー",
+        desc: "エネルギーの抑圧を解くと、怒りは「意志」に、嫉妬は「ビジョン」に、欲望は「創造性」に、恐れは「守る力」に、悲しみは「共感」に。同じエネルギーがギフトへ変化します。"
+      },
+      {
+        img: "Gifts_of_the_Shadow_p09.jpg",
+        title: "解放とは「衝動のまま行動すること」ではない",
+        subtitle: "ただそこに「在る」ことを許すということ",
+        desc: "感情に任せて暴れる必要はありません。ただ「今、そう感じているんだね」と、自分自身に寄り添い、その存在を認める。ただそれだけで、止まっていたエネルギーは再び温かく流れ始めます。"
+      }
+    ];
+
+    // ==========================================
+    // 2. 状態管理 (State)
+    // ==========================================
+    let activeTab = 'story';
+    let currentSlide = 0;
+    let soundEnabled = false;
+    let diagnosticAnswers = {};
+    let activeShadowId = 'anger';
+    
+    // ジャーナルの状態
+    let selectedShadowForJournal = 'anger';
+    let journalInput = '';
+    let journalStep = 0; // 0: 入力, 1: 存在を認める, 2: 統合
+    let journalAnimationState = ''; // 'liberating', 'accepting', ''
+
+    // ==========================================
+    // 3. サウンドエンジン (Web Audio API)
+    // ==========================================
+    function playSound(freq1 = 440, freq2 = 444, duration = 2.5, type = 'sine') {
+      if (!soundEnabled) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = type;
+        osc1.frequency.setValueAtTime(freq1, ctx.currentTime);
+        
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = type;
+        osc2.frequency.setValueAtTime(freq2, ctx.currentTime);
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1200, ctx.currentTime);
+
+        const now = ctx.currentTime;
+        gain1.gain.setValueAtTime(0, now);
+        gain1.gain.linearRampToValueAtTime(0.2, now + 0.08);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        gain2.gain.setValueAtTime(0, now);
+        gain2.gain.linearRampToValueAtTime(0.15, now + 0.1);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+        gain1.connect(filter);
+        gain2.connect(filter);
+        filter.connect(ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + duration);
+        osc2.stop(now + duration);
+      } catch (e) {
+        console.warn("Audio Context error:", e);
+      }
+    }
+
+    function playTick() {
+      playSound(523.25, 525, 0.4, 'triangle'); // C5
+    }
+
+    function playLiberationSound() {
+      playSound(523.25, 525.5, 3.5, 'sine'); // ド
+      setTimeout(() => playSound(659.25, 661.0, 3.5, 'sine'), 150); // ミ
+      setTimeout(() => playSound(783.99, 786.0, 4.0, 'sine'), 300); // ソ
+      setTimeout(() => playSound(1046.5, 1049.0, 5.0, 'sine'), 450); // 高ド
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('sound-toggle-btn');
+      const iconOff = document.getElementById('sound-icon-off');
+      const iconOn = document.getElementById('sound-icon-on');
+      const text = document.getElementById('sound-text');
+
+      if (soundEnabled) {
+        iconOff.classList.add('hidden');
+        iconOn.classList.remove('hidden');
+        text.innerText = '音 ON';
+        btn.className = "p-2 rounded-lg border text-xs flex items-center gap-1.5 transition-all bg-indigo-900/50 text-amber-300 border-indigo-700";
+        setTimeout(() => playSound(523.25, 525, 1.2, 'sine'), 100);
+      } else {
+        iconOff.classList.remove('hidden');
+        iconOn.classList.add('hidden');
+        text.innerText = '音 OFF';
+        btn.className = "p-2 rounded-lg border text-xs flex items-center gap-1.5 transition-all bg-transparent text-slate-400 border-indigo-950 hover:text-slate-200";
+      }
+    }
+
+    // ==========================================
+    // 4. 画像読み込みエラー・フォールバック
+    // ==========================================
+    function handleImageError(imgElement) {
+      imgElement.classList.add('hidden');
+      const placeholder = document.getElementById('slide-placeholder');
+      placeholder.classList.remove('hidden');
+      
+      // プレースホルダーの情報をスライドに基づいて書き換える
+      document.getElementById('placeholder-title').innerText = SLIDES[currentSlide].title;
+      document.getElementById('placeholder-subtitle').innerText = SLIDES[currentSlide].subtitle;
+      document.getElementById('placeholder-filename').innerText = `[イメージ：${SLIDES[currentSlide].img}]`;
+    }
+
+    // ==========================================
+    // 5. タブ切り替え制御
+    // ==========================================
+    function switchTab(tabName) {
+      activeTab = tabName;
+      playTick();
+
+      // パネルの表示切り替え
+      const tabs = ['story', 'alchemy', 'diagnostic', 'journal'];
+      tabs.forEach(t => {
+        const panel = document.getElementById(`tab-panel-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        
+        if (t === tabName) {
+          panel.classList.remove('hidden');
+          btn.className = "flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20";
+        } else {
+          panel.classList.add('hidden');
+          btn.className = "flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 text-indigo-200 hover:bg-indigo-900/30";
+        }
+      });
+
+      // 各タブの初期表示トリガー
+      if (tabName === 'story') {
+        renderStory();
+      } else if (tabName === 'alchemy') {
+        renderAlchemy();
+      } else if (tabName === 'diagnostic') {
+        renderDiagnostic();
+      } else if (tabName === 'journal') {
+        renderJournal();
+      }
+    }
+
+    // ==========================================
+    // 6. 各コンテンツの描画制御 (Render Functions)
+    // ==========================================
+
+    /* --- デジタル絵本 (Story) --- */
+    function renderStory() {
+      const slide = SLIDES[currentSlide];
+      
+      // DOM更新
+      const img = document.getElementById('slide-img');
+      img.src = slide.img;
+      img.classList.remove('hidden');
+      document.getElementById('slide-placeholder').classList.add('hidden');
+      
+      document.getElementById('slide-page-indicator').innerText = `${currentSlide + 1} / ${SLIDES.length}`;
+      document.getElementById('story-phase-label').innerText = `STORY PHASE ${currentSlide + 1}`;
+      document.getElementById('story-title').innerText = slide.title;
+      document.getElementById('story-subtitle').innerText = slide.subtitle;
+      document.getElementById('story-desc').innerText = slide.desc;
+
+      // 前へ・次へボタンの活性制御
+      const prevBtn = document.getElementById('story-prev-btn');
+      const nextBtn = document.getElementById('story-next-btn');
+
+      if (currentSlide === 0) {
+        prevBtn.disabled = true;
+        prevBtn.className = "flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold transition-all text-slate-600 cursor-not-allowed";
+      } else {
+        prevBtn.disabled = false;
+        prevBtn.className = "flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold transition-all text-amber-200 hover:bg-indigo-950/60 border border-indigo-800/30";
+      }
+
+      // 「次へ」か「才能図鑑へ進む」か
+      if (currentSlide === SLIDES.length - 1) {
+        nextBtn.innerHTML = `<span>才能図鑑へ進む</span><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>`;
+        nextBtn.onclick = () => switchTab('alchemy');
+        nextBtn.className = "flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-xl text-xs hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95 transition-all";
+      } else {
+        nextBtn.innerHTML = `<span>進む</span><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>`;
+        nextBtn.onclick = nextSlide;
+        nextBtn.className = "flex items-center gap-1 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-semibold rounded-xl text-xs hover:shadow-lg hover:shadow-amber-500/20 active:scale-95 transition-all";
+      }
+
+      // ドットインジケータ描画
+      const dotsContainer = document.getElementById('story-dots');
+      dotsContainer.innerHTML = SLIDES.map((_, idx) => `
+        <button 
+          onclick="goToSlide(${idx})"
+          class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-amber-400 w-4' : 'bg-indigo-950 hover:bg-indigo-800'}"
+        ></button>
+      `).join('');
+    }
+
+    function nextSlide() {
+      if (currentSlide < SLIDES.length - 1) {
+        currentSlide++;
+        playTick();
+        renderStory();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        playTick();
+        renderStory();
+      }
+    }
+
+    function goToSlide(idx) {
+      currentSlide = idx;
+      playTick();
+      renderStory();
+    }
+
+    // キーボード左右での操作対応
+    window.addEventListener('keydown', (e) => {
+      if (activeTab === 'story') {
+        if (e.key === 'ArrowRight') {
+          nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+          prevSlide();
+        }
+      }
+    });
+
+
+    /* --- シャドウ図鑑 (Alchemy) --- */
+    function renderAlchemy() {
+      // 左側リスト描画
+      const listContainer = document.getElementById('alchemy-shadow-list');
+      listContainer.innerHTML = SHADOW_DATA.map(shadow => {
+        const isSelected = activeShadowId === shadow.id;
+        return `
+          <button
+            onclick="selectAlchemyShadow('${shadow.id}')"
+            class="relative flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all ${
+              isSelected 
+                ? 'bg-[#1b1d40] border-indigo-500 shadow-lg shadow-indigo-950/40 translate-x-1' 
+                : 'bg-[#101228]/60 border-indigo-950 hover:bg-[#141733]/50 hover:border-indigo-900/50'
+            }"
+          >
+            <div class="text-2xl">${shadow.shadowEmoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-[10px] text-indigo-400 font-semibold tracking-wider">SHADOW</div>
+              <h3 class="text-sm font-bold text-slate-100">${shadow.name}</h3>
+            </div>
+            <div class="w-2 h-2 rounded-full transition-all ${isSelected ? 'bg-amber-400 scale-125' : 'bg-slate-700'}"></div>
+          </button>
+        `;
+      }).join('');
+
+      // 右側詳細カード描画
+      const shadow = SHADOW_DATA.find(s => s.id === activeShadowId);
+      const detailContainer = document.getElementById('alchemy-detail-card');
+      
+      detailContainer.innerHTML = `
+        <div class="space-y-6">
+          <!-- タイトルヘッダー -->
+          <div class="flex items-center justify-between border-b border-indigo-900/40 pb-4">
+            <div class="flex items-center gap-2">
+              <span class="text-3xl">${shadow.shadowEmoji}</span>
+              <div>
+                <h3 class="text-base font-bold text-slate-100">${shadow.name} の錬金術</h3>
+                <p class="text-xs text-indigo-400">エネルギーの変容プロセス</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 text-[11px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+              <svg class="w-3 h-3 animate-spin" style="animation-duration: 4s" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+              <span>TRANSFORMATION</span>
+            </div>
+          </div>
+
+          <!-- 変換ビジュアル： 影 → ギフト -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+            
+            <!-- 影の側面 -->
+            <div class="p-4 rounded-xl border ${shadow.shadowColor} flex flex-col justify-between min-h-[140px] relative">
+              <div class="absolute top-3 right-3 text-slate-500 text-xs flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <span>抑圧された姿</span>
+              </div>
+              <div class="space-y-1">
+                <span class="text-[10px] uppercase tracking-wider opacity-60">SHADOW (閉じ込めた影)</span>
+                <h4 class="text-sm font-bold">${shadow.name}</h4>
+              </div>
+              <p class="text-xs leading-relaxed opacity-80">${shadow.description}</p>
+            </div>
+
+            <!-- ピュアな生命力（触媒） -->
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex w-8 h-8 rounded-full bg-indigo-950 border border-indigo-500/50 items-center justify-center z-20">
+              <svg class="w-4 h-4 text-amber-300 animate-spin" style="animation-duration: 8s" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"/></svg>
+            </div>
+
+            <!-- 才能の側面 -->
+            <div class="p-4 rounded-xl border ${shadow.giftColor} ${shadow.glow} flex flex-col justify-between min-h-[140px] relative bg-gradient-to-b from-[#13173d] to-[#0a0d24]">
+              <div class="absolute top-3 right-3 text-amber-400/80 text-xs flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+                <span>輝く姿</span>
+              </div>
+              <div class="space-y-1">
+                <span class="text-[10px] uppercase tracking-wider text-amber-400 font-bold">GIFT (開花した才能)</span>
+                <div class="flex items-center gap-1.5">
+                  ${shadow.iconSvg}
+                  <h4 class="text-sm font-bold text-amber-300">${shadow.giftTitle}</h4>
+                </div>
+              </div>
+              <p class="text-xs leading-relaxed text-slate-200">${shadow.giftDesc}</p>
+            </div>
+
+          </div>
+
+          <!-- 心の奥底のニード -->
+          <div class="bg-[#121536]/80 p-4 rounded-xl border border-indigo-950 flex items-start gap-3">
+            <div class="p-1.5 bg-indigo-900/60 rounded text-indigo-400 shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="space-y-1">
+              <h5 class="text-xs font-bold text-indigo-300 font-mono">SHADOW'S CRY (生命力の源泉)</h5>
+              <p class="text-xs text-slate-300 font-medium leading-relaxed">
+                「${shadow.deepNeed}」
+              </p>
+            </div>
+          </div>
+
+          <!-- アルケミカル・フレーズ -->
+          <div class="p-4 bg-gradient-to-r from-indigo-950/40 via-indigo-900/20 to-transparent border-l-2 border-amber-400 rounded-r-lg">
+            <p class="text-xs italic text-amber-200/90 leading-relaxed font-light">
+              “ ${shadow.phrase} ”
+            </p>
+          </div>
+
+          <!-- 下部アクション -->
+          <div class="pt-6 border-t border-indigo-900/40 flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <span class="text-xs text-indigo-400">
+              ※感情に善悪はありません。流れているか、止まっているか。それだけです。
+            </span>
+            <button
+              onclick="startJournalFromAlchemy('${shadow.id}')"
+              class="flex items-center gap-1.5 text-xs text-slate-950 bg-amber-400 hover:bg-amber-300 px-4 py-2 rounded-xl font-bold transition-all shadow-md active:scale-95 shrink-0"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              <span>この感情を解放するワークへ</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function selectAlchemyShadow(shadowId) {
+      activeShadowId = shadowId;
+      playTick();
+      renderAlchemy();
+    }
+
+    function startJournalFromAlchemy(shadowId) {
+      selectedShadowForJournal = shadowId;
+      journalStep = 0;
+      journalInput = `なんだかモヤモヤするし、本当は…`;
+      switchTab('journal');
+    }
+
+
+    /* --- 心の声診断 (Diagnostic) --- */
+    function renderDiagnostic() {
+      const container = document.getElementById('diagnostic-questions-container');
+      
+      container.innerHTML = DIAGNOSTIC_QUESTIONS.map((q, idx) => {
+        const isChecked = diagnosticAnswers[q.id] === true;
+        return `
+          <div 
+            onclick="toggleDiagnosticAnswer('${q.id}', !${isChecked})"
+            class="p-4 rounded-xl border transition-all cursor-pointer flex gap-4 items-start ${
+              isChecked 
+                ? 'bg-[#1b1d40] border-indigo-500 shadow-md shadow-indigo-950/20' 
+                : 'bg-[#101228]/50 border-indigo-950/80 hover:bg-[#141733]/40'
+            }"
+          >
+            <div class="mt-0.5 shrink-0">
+              <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                isChecked ? 'bg-amber-400 border-amber-400 text-slate-950' : 'border-indigo-800'
+              }">
+                ${isChecked ? `<svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : ''}
+              </div>
+            </div>
+            <div class="space-y-1">
+              <span class="text-[10px] text-indigo-400 uppercase tracking-widest font-mono">QUESTION 0${idx + 1}</span>
+              <p class="text-xs md:text-sm text-slate-200 font-medium leading-relaxed">${q.text}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleDiagnosticAnswer(qId, value) {
+      diagnosticAnswers[qId] = value;
+      playTick();
+      renderDiagnostic();
+    }
+
+    function calculateDiagnosticResult() {
+      const counts = {};
+      let hasAnswers = false;
+
+      DIAGNOSTIC_QUESTIONS.forEach(q => {
+        const isChecked = diagnosticAnswers[q.id];
+        if (isChecked) {
+          hasAnswers = true;
+          counts[q.shadowId] = (counts[q.shadowId] || 0) + 1;
+        }
+      });
+
+      // 反応がない場合はランダムかanger
+      let maxShadowId = 'anger';
+      if (hasAnswers) {
+        let maxCount = -1;
+        SHADOW_DATA.forEach(shadow => {
+          const count = counts[shadow.id] || 0;
+          if (count > maxCount) {
+            maxCount = count;
+            maxShadowId = shadow.id;
+          }
+        });
+      } else {
+        // 反応ゼロの場合は最初のシャドウを提示
+        maxShadowId = 'anger';
+      }
+
+      const resultShadow = SHADOW_DATA.find(s => s.id === maxShadowId);
+      
+      // 結果パネルを生成して表示
+      const resultPanel = document.getElementById('diagnostic-result-panel');
+      const inputPanel = document.getElementById('diagnostic-input-panel');
+
+      resultPanel.innerHTML = `
+        <!-- 装飾のバックグラウンド光 -->
+        <div class="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br ${resultShadow.color} opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="text-center space-y-1 relative z-10">
+          <span class="text-xs text-amber-400 font-bold uppercase tracking-widest font-mono">DIAGNOSTIC RESULT</span>
+          <h3 class="text-xl md:text-2xl font-black text-slate-100">あなたの中でうずく「シャドウ」と「ギフト」</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch relative z-10 mt-4">
+          
+          <!-- 影の現状 -->
+          <div class="p-5 rounded-2xl border ${resultShadow.shadowColor} flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center gap-2">
+                <span class="text-3xl">${resultShadow.shadowEmoji}</span>
+                <div>
+                  <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">現在、抑圧が強いシャドウ</span>
+                  <h4 class="text-base font-bold text-slate-200">【${resultShadow.name}】のエネルギー</h4>
+                </div>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed font-light">${resultShadow.description}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-indigo-900/30">
+              <p class="text-[11px] text-indigo-400 font-semibold">バネのように閉じ込められた理由：</p>
+              <p class="text-xs text-slate-400 italic">「こんな感情を持ってはいけない、恥ずかしい、他人に迷惑がかかる」という観念が、この純粋な生命力を地下室に押し込めているかもしれません。</p>
+            </div>
+          </div>
+
+          <!-- ギフトの力 -->
+          <div class="p-5 rounded-2xl border ${resultShadow.giftColor} ${resultShadow.glow} flex flex-col justify-between bg-gradient-to-b from-[#13173d] to-[#0a0d24]">
+            <div class="space-y-3">
+              <div class="flex items-center gap-2">
+                <div class="p-1.5 bg-amber-500/10 rounded-lg text-amber-300 shrink-0">
+                  ${resultShadow.iconSvg}
+                </div>
+                <div>
+                  <span class="text-[10px] text-amber-400 uppercase tracking-wider block font-bold">解放されたときに現れる</span>
+                  <h4 class="text-base font-extrabold text-amber-300">内なるギフト：【${resultShadow.giftTitle}】</h4>
+                </div>
+              </div>
+              <p class="text-xs text-slate-200 leading-relaxed font-light">${resultShadow.giftDesc}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-indigo-900/30">
+              <p class="text-[11px] text-amber-300 font-semibold">ギフトを日常に生かすヒント：</p>
+              <p class="text-xs text-amber-100/90">「いま、自分は${resultShadow.name}を感じているんだ」と否定せずにただ心の中で認め、深く深呼吸してください。それだけでエネルギーの変容が始まります。</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="bg-[#12142d] p-4 rounded-xl border border-indigo-950/80 text-center text-xs text-indigo-200 tracking-wide relative z-10 font-serif">
+          “ ${resultShadow.phrase} ”
+        </div>
+
+        <!-- ボタンアクション -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 relative z-10">
+          <button
+            onclick="resetDiagnostic()"
+            class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 bg-indigo-950 hover:bg-indigo-900/50 px-4 py-2.5 rounded-xl border border-indigo-900/40 transition-all font-medium"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"/></svg>
+            <span>もう一度診断する</span>
+          </button>
+
+          <button
+            onclick="startJournalFromDiagnostic('${resultShadow.id}')"
+            class="flex items-center gap-1.5 text-xs text-slate-950 bg-amber-400 hover:bg-amber-300 px-5 py-2.5 rounded-xl font-bold transition-all shadow-md active:scale-95"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            <span>この感情をノートで解放する</span>
+          </button>
+        </div>
+      `;
+
+      inputPanel.classList.add('hidden');
+      resultPanel.classList.remove('hidden');
+      playLiberationSound();
+    }
+
+    function resetDiagnostic() {
+      diagnosticAnswers = {};
+      playTick();
+      document.getElementById('diagnostic-result-panel').classList.add('hidden');
+      document.getElementById('diagnostic-input-panel').classList.remove('hidden');
+      renderDiagnostic();
+    }
+
+    function startJournalFromDiagnostic(shadowId) {
+      selectedShadowForJournal = shadowId;
+      journalStep = 0;
+      journalInput = `本当は、${SHADOW_DATA.find(s => s.id === shadowId).name}が隠れているような気がする…`;
+      switchTab('journal');
+    }
+
+
+    /* --- 解放のワーク (Journal) --- */
+    function renderJournal() {
+      const container = document.getElementById('journal-step-container');
+      const glowBg = document.getElementById('journal-glow-bg');
+
+      // 背景のオーラ制御
+      if (journalAnimationState === 'liberating') {
+        glowBg.className = "absolute inset-0 bg-gradient-to-t from-amber-500/10 via-amber-300/5 to-transparent animate-pulse pointer-events-none z-0";
+      } else if (journalAnimationState === 'accepting') {
+        glowBg.className = "absolute inset-0 bg-gradient-to-t from-sky-500/15 via-indigo-500/5 to-transparent animate-pulse pointer-events-none z-0";
+      } else {
+        glowBg.className = "absolute inset-0 bg-transparent pointer-events-none z-0";
+      }
+
+      // ステップ0：書き込みフェーズ
+      if (journalStep === 0) {
+        container.innerHTML = `
+          <div class="space-y-5 relative z-10 flex-1 flex flex-col justify-between">
+            <div class="space-y-4">
+              
+              <!-- シャドウカテゴリ選択 -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-indigo-300 tracking-wider">
+                  1. どのエネルギー（シャドウ）に近そうですか？
+                </label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  ${SHADOW_DATA.map(s => `
+                    <button
+                      type="button"
+                      onclick="selectJournalShadow('${s.id}')"
+                      class="flex items-center gap-2 p-2 rounded-xl text-xs border text-left transition-all ${
+                        selectedShadowForJournal === s.id 
+                          ? 'bg-[#1b1d40] border-amber-500/60 text-amber-200' 
+                          : 'bg-[#0b0c1b]/60 border-indigo-950 text-indigo-300/80 hover:bg-[#101228]'
+                      }"
+                    >
+                      <span class="text-base">${s.shadowEmoji}</span>
+                      <span class="font-semibold">${s.name}</span>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- 本音の書き込み -->
+              <div class="space-y-1.5">
+                <label class="text-xs font-bold text-indigo-300 tracking-wider">
+                  2. あなたが抑え込んでいる「心の声」をありのままに書き出してください：
+                </label>
+                <textarea
+                  id="journal-textarea"
+                  oninput="updateJournalInput(this.value)"
+                  placeholder="例：本当はもっと自分の意見を通したいけれど、わがままだと思われそうで怖くて言えずにいる。つい嫉妬してしまう自分も嫌い。"
+                  class="w-full min-h-[140px] p-4 bg-[#080916]/80 border border-indigo-950 focus:border-indigo-800 text-slate-100 rounded-xl text-xs md:text-sm leading-relaxed placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-800"
+                  maxlength="400"
+                >${journalInput}</textarea>
+                <div class="text-right text-[10px] text-slate-600">
+                  <span id="journal-char-count">${journalInput.length}</span>/400 文字（内容はあなた専用で、送信・保存はされません）
+                </div>
+              </div>
+
+            </div>
+
+            <!-- アクション -->
+            <div class="pt-6 border-t border-indigo-900/30 mt-6 flex justify-end">
+              <button
+                id="journal-submit-btn"
+                onclick="submitJournal()"
+                ${journalInput.trim() ? '' : 'disabled'}
+                class="flex items-center gap-1.5 px-6 py-3 rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 ${
+                  journalInput.trim() 
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 hover:shadow-lg hover:shadow-amber-500/10' 
+                    : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/30'
+                }"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                <span>この感情を認めるワークを始める</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } 
+      
+      // ステップ1：存在をただ認める
+      else if (journalStep === 1) {
+        container.innerHTML = `
+          <div class="space-y-6 relative z-10 flex-1 flex flex-col justify-between fade-in">
+            
+            <div class="space-y-5 my-auto max-w-xl mx-auto text-center">
+              
+              <div class="inline-flex p-3 bg-indigo-950/80 rounded-full border border-indigo-800 text-amber-300 mb-2">
+                <svg class="w-6 h-6 text-amber-400 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+
+              <h3 class="text-lg font-bold text-slate-100 tracking-wide">
+                「今、私はそう感じている」と気づく。
+              </h3>
+
+              <!-- ユーザーが打ち込んだ言葉の投影 -->
+              <div class="p-5 bg-[#0a0c1a]/90 border border-indigo-950 rounded-xl relative">
+                <span class="absolute -top-2 left-4 px-2 bg-[#111432] text-[10px] text-indigo-400 font-mono tracking-widest">心の奥底の声</span>
+                <p class="text-xs md:text-sm text-amber-100/90 italic font-serif leading-relaxed text-center whitespace-pre-line">
+                  “ ${journalInput} ”
+                </p>
+              </div>
+
+              <p class="text-xs text-indigo-300 leading-relaxed max-w-md mx-auto">
+                怒ること、嫉妬すること、弱さや欲求を抱えることは悪いことではありません。<br />
+                「こんなこと思ってはいけない」を一度手放し、<br />
+                <strong class="text-amber-200">「今、私はこの感情を感じている。それがあっていい」</strong>と、自分自身にそっと声をかけ、受け入れてください。
+              </p>
+
+            </div>
+
+            <div class="pt-6 border-t border-indigo-900/30 mt-6 flex flex-col sm:flex-row gap-3 items-center justify-between">
+              <button
+                onclick="resetJournal()"
+                class="text-xs text-slate-400 hover:text-slate-200 transition-all font-medium py-2"
+              >
+                書き直す
+              </button>
+
+              <button
+                onclick="acceptJournalEmotion()"
+                class="flex items-center gap-1.5 px-6 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold rounded-xl text-xs shadow-lg hover:shadow-indigo-500/20 active:scale-95 transition-all"
+              >
+                <svg class="w-4 h-4 fill-current text-rose-300 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+                <span>存在をそのまま認め、抱きしめる</span>
+              </button>
+            </div>
+
+          </div>
+        `;
+      } 
+      
+      // ステップ2：才能(ギフト)への昇華統合
+      else if (journalStep === 2) {
+        const shadow = SHADOW_DATA.find(s => s.id === selectedShadowForJournal);
+        container.innerHTML = `
+          <div class="space-y-6 relative z-10 flex-1 flex flex-col justify-between scale-in">
+            
+            <div class="space-y-5 my-auto max-w-xl mx-auto text-center">
+              
+              <!-- ギフトアイコン -->
+              <div class="inline-flex p-4 rounded-full border ${shadow.giftColor} ${shadow.glow} bg-gradient-to-br ${shadow.color} text-slate-950 mb-2">
+                ${shadow.iconSvg.replace('text-amber-300', 'text-slate-950').replace('text-teal-300', 'text-slate-950').replace('text-pink-300', 'text-slate-950').replace('text-blue-300', 'text-slate-950').replace('text-cyan-300', 'text-slate-950').replace('text-blue-200', 'text-slate-950')}
+              </div>
+
+              <div class="space-y-1">
+                <span class="text-[10px] text-amber-400 tracking-widest font-extrabold uppercase font-mono">ALCHEMICAL INTEGRATION</span>
+                <h3 class="text-xl font-black text-slate-100">
+                  影が溶け、【${shadow.giftTitle}】のギフトへと生まれ変わりました。
+                </h3>
+              </div>
+
+              <!-- 変容結果の対比 -->
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center text-left py-2">
+                <div class="sm:col-span-5 p-3.5 rounded-xl border border-red-950/40 bg-red-950/10 text-xs">
+                  <span class="text-[9px] uppercase tracking-wider text-red-400 block font-bold">影（抑圧していた部分）</span>
+                  <div class="font-semibold text-slate-300 mt-0.5">${shadow.name}</div>
+                  <p class="text-[10px] text-slate-400 mt-1">「ここにいるよ」と訴えていた不満や葛藤のサイン。</p>
+                </div>
+
+                <div class="sm:col-span-2 text-center text-amber-300 text-sm font-black hidden sm:block">➡️</div>
+
+                <div class="sm:col-span-5 p-3.5 rounded-xl border border-amber-950/40 bg-amber-950/20 text-xs shadow-[0_0_15px_rgba(245,158,11,0.05)]">
+                  <span class="text-[9px] uppercase tracking-wider text-amber-400 block font-bold">ギフト（本来の輝き）</span>
+                  <div class="font-bold text-amber-300 mt-0.5">${shadow.giftTitle}</div>
+                  <p class="text-[10px] text-amber-100/80 mt-1">${shadow.giftDesc}</p>
+                </div>
+              </div>
+
+              <p class="text-xs text-indigo-300 leading-relaxed max-w-md mx-auto">
+                抑え込んでいたバネが解放され、素晴らしい意志、ビジョン、創造性、そして愛として輝き出しました。
+                嫌っていた闇は、あなたに迎えに来てほしかった「あなた自身」だったのです。
+              </p>
+
+              <div class="p-3 bg-[#0c0e25]/60 border border-indigo-950 rounded-lg text-xs italic text-amber-200 font-light font-serif">
+                “ ${shadow.phrase} ”
+              </div>
+
+            </div>
+
+            <div class="pt-6 border-t border-indigo-900/30 mt-6 flex justify-center">
+              <button
+                onclick="resetJournal()"
+                class="flex items-center gap-1.5 px-6 py-2.5 bg-indigo-950 hover:bg-indigo-900/40 text-slate-300 border border-indigo-900/30 font-bold rounded-xl text-xs transition-all"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"/></svg>
+                <span>他の想いも解放する / ノートをクリア</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function selectJournalShadow(shadowId) {
+      selectedShadowForJournal = shadowId;
+      playTick();
+      renderJournal();
+    }
+
+    function updateJournalInput(value) {
+      journalInput = value;
+      // 文字数・ボタンの活性制御
+      const countEl = document.getElementById('journal-char-count');
+      if (countEl) countEl.innerText = value.length;
+      
+      const submitBtn = document.getElementById('journal-submit-btn');
+      if (submitBtn) {
+        if (value.trim()) {
+          submitBtn.disabled = false;
+          submitBtn.className = "flex items-center gap-1.5 px-6 py-3 rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 hover:shadow-lg hover:shadow-amber-500/10";
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.className = "flex items-center gap-1.5 px-6 py-3 rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/30";
+        }
+      }
+    }
+
+    function submitJournal() {
+      if (!journalInput.trim()) return;
+
+      journalAnimationState = 'liberating';
+      renderJournal();
+      playLiberationSound();
+
+      setTimeout(() => {
+        journalStep = 1; // 存在をただ認めるステップへ
+        journalAnimationState = '';
+        renderJournal();
+      }, 2000);
+    }
+
+    function acceptJournalEmotion() {
+      journalAnimationState = 'accepting';
+      renderJournal();
+      playTick();
+
+      setTimeout(() => {
+        journalStep = 2; // ギフトへ昇華
+        journalAnimationState = '';
+        renderJournal();
+        playSound(880, 882, 3.5, 'sine'); // 輝くA5コード
+      }, 1500);
+    }
+
+    function resetJournal() {
+      journalInput = '';
+      journalStep = 0;
+      journalAnimationState = '';
+      playTick();
+      renderJournal();
+    }
+
+
+    // ==========================================
+    // 7. アプリ初期化
+    // ==========================================
+    window.onload = function() {
+      // 最初の読み込み時にデジタル絵本（Story）を描写
+      renderStory();
+    };
+  </script>
+</body>
+</html>
